@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Music Studio</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          "Segoe UI",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #111;
+        color: #e0e0e0;
+        min-height: 100vh;
+      }
+      header {
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        padding: 1.5rem 2rem;
+        border-bottom: 2px solid #f97316;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      header h1 {
+        font-size: 1.8rem;
+        color: #fff;
+        letter-spacing: -0.5px;
+      }
+      header h1 span {
+        font-size: 1.6rem;
+      }
+      header p {
+        color: #94a3b8;
+        font-size: 0.9rem;
+      }
+      .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+      .card {
+        background: #1e1e2e;
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid #2a2a3e;
+      }
+      .card h2 {
+        color: #f97316;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+      }
+      @media (max-width: 600px) {
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      label {
+        display: block;
+        color: #94a3b8;
+        font-size: 0.85rem;
+        margin-bottom: 0.3rem;
+      }
+      select,
+      input[type="number"] {
+        width: 100%;
+        padding: 0.6rem 0.8rem;
+        background: #111;
+        border: 1px solid #333;
+        border-radius: 8px;
+        color: #e0e0e0;
+        font-size: 0.95rem;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      select:focus,
+      input[type="number"]:focus {
+        border-color: #f97316;
+      }
+      .checkbox-row {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding-top: 1.2rem;
+      }
+      .checkbox-row input {
+        width: 18px;
+        height: 18px;
+        accent-color: #f97316;
+      }
+      .checkbox-row label {
+        margin: 0;
+        color: #e0e0e0;
+        font-size: 0.95rem;
+      }
+      .btn {
+        padding: 0.7rem 1.8rem;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #f97316, #ea580c);
+        color: #fff;
+        margin-top: 1rem;
+        width: 100%;
+      }
+      .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 20px rgba(249, 115, 22, 0.3);
+      }
+      .btn-primary:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+      }
+      .btn-download {
+        background: #1e293b;
+        color: #22d3ee;
+        border: 1px solid #22d3ee;
+        padding: 0.4rem 1rem;
+        font-size: 0.85rem;
+        border-radius: 6px;
+      }
+      .btn-download:hover {
+        background: #22d3ee;
+        color: #111;
+      }
+      .loading {
+        display: none;
+        text-align: center;
+        padding: 2rem;
+      }
+      .loading.active {
+        display: block;
+      }
+      .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #333;
+        border-top-color: #f97316;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .results {
+        display: none;
+      }
+      .results.active {
+        display: block;
+      }
+      .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .status-complete {
+        background: #065f46;
+        color: #34d399;
+      }
+      .status-error {
+        background: #7f1d1d;
+        color: #fca5a5;
+      }
+      .meta {
+        display: flex;
+        gap: 2rem;
+        margin: 1rem 0;
+        flex-wrap: wrap;
+      }
+      .meta-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+      }
+      .meta-item .label {
+        color: #64748b;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .meta-item .value {
+        color: #e0e0e0;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+      .track-list {
+        list-style: none;
+        margin-top: 1rem;
+      }
+      .track-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.8rem 1rem;
+        background: #111;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+        border: 1px solid #2a2a3e;
+      }
+      .track-item .track-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .track-icon {
+        font-size: 1.3rem;
+      }
+      .track-name {
+        font-weight: 500;
+      }
+      .download-section {
+        margin-top: 1.5rem;
+        display: flex;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+      .error-msg {
+        color: #fca5a5;
+        background: #450a0a;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-top: 1rem;
+        display: none;
+      }
+      .error-msg.active {
+        display: block;
+      }
+      footer {
+        text-align: center;
+        padding: 2rem;
+        color: #475569;
+        font-size: 0.8rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div>
+        <h1><span>🎸</span> AI Music Studio</h1>
+        <p>Multi-agent MIDI backing track generator</p>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="card">
+        <h2>🎛️ Session Configuration</h2>
+        <div class="form-grid">
+          <div>
+            <label for="genre">Genre</label>
+            <select id="genre">
+              <option value="classic_rock">Classic Rock</option>
+              <option value="blues">Blues</option>
+              <option value="pop">Pop</option>
+              <option value="folk">Folk</option>
+              <option value="country">Country</option>
+              <option value="punk">Punk</option>
+              <option value="hard_rock">Hard Rock</option>
+            </select>
+          </div>
+          <div>
+            <label for="key_root">Key Root</label>
+            <select id="key_root">
+              <option value="C">C</option>
+              <option value="C#">C#</option>
+              <option value="D">D</option>
+              <option value="D#">D#</option>
+              <option value="E" selected>E</option>
+              <option value="F">F</option>
+              <option value="F#">F#</option>
+              <option value="G">G</option>
+              <option value="G#">G#</option>
+              <option value="A">A</option>
+              <option value="A#">A#</option>
+              <option value="B">B</option>
+            </select>
+          </div>
+          <div>
+            <label for="key_mode">Mode</label>
+            <select id="key_mode">
+              <option value="major">Major</option>
+              <option value="minor" selected>Minor</option>
+              <option value="dorian">Dorian</option>
+              <option value="mixolydian">Mixolydian</option>
+              <option value="pentatonic_major">Pentatonic Major</option>
+              <option value="pentatonic_minor">Pentatonic Minor</option>
+              <option value="blues">Blues</option>
+            </select>
+          </div>
+          <div>
+            <label for="tempo">Tempo (BPM)</label>
+            <input type="number" id="tempo" value="120" min="40" max="300" />
+          </div>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="with_keys" />
+          <label for="with_keys">Add Keyboard</label>
+        </div>
+        <button class="btn btn-primary" id="generateBtn" onclick="generate()">
+          🎵 Generate Backing Track
+        </button>
+      </div>
+
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <p>Generating tracks... the band is warming up 🎶</p>
+      </div>
+
+      <div class="error-msg" id="errorMsg"></div>
+
+      <div class="results" id="results">
+        <div class="card">
+          <h2>🎧 Session Results</h2>
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 1rem;
+              flex-wrap: wrap;
+            "
+          >
+            <span class="status-badge" id="statusBadge"></span>
+            <span
+              id="sessionId"
+              style="color: #64748b; font-size: 0.85rem"
+            ></span>
+          </div>
+          <div class="meta">
+            <div class="meta-item">
+              <span class="label">Genre</span
+              ><span class="value" id="resGenre"></span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Key</span
+              ><span class="value" id="resKey"></span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Tempo</span
+              ><span class="value" id="resTempo"></span>
+            </div>
+            <div class="meta-item">
+              <span class="label">Tracks</span
+              ><span class="value" id="resTrackCount"></span>
+            </div>
+          </div>
+          <h3 style="color: #94a3b8; font-size: 0.9rem; margin-top: 1rem">
+            Generated Tracks
+          </h3>
+          <ul class="track-list" id="trackList"></ul>
+          <div class="download-section">
+            <button
+              class="btn btn-download"
+              id="dlCombined"
+              onclick="downloadCombined()"
+            >
+              ⬇ Download Combined MIDI
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      AI Music Studio &mdash; Powered by multi-agent MIDI generation
+    </footer>
+
+    <script>
+      const ICONS = {
+        drums: "🥁",
+        bass: "🎸",
+        electric_guitar: "🎸",
+        acoustic_guitar: "🎶",
+        keys: "🎹",
+        vocals: "🎤",
+      };
+      let currentSession = null;
+
+      async function generate() {
+        const btn = document.getElementById("generateBtn");
+        const loading = document.getElementById("loading");
+        const results = document.getElementById("results");
+        const errorMsg = document.getElementById("errorMsg");
+
+        btn.disabled = true;
+        loading.classList.add("active");
+        results.classList.remove("active");
+        errorMsg.classList.remove("active");
+
+        const body = {
+          genre: document.getElementById("genre").value,
+          key_root: document.getElementById("key_root").value,
+          key_mode: document.getElementById("key_mode").value,
+          tempo: parseInt(document.getElementById("tempo").value),
+          with_keys: document.getElementById("with_keys").checked,
+        };
+
+        try {
+          const resp = await fetch("/api/sessions/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          if (!resp.ok) {
+            const e = await resp.json();
+            throw new Error(e.detail || "Generation failed");
+          }
+          const data = await resp.json();
+          currentSession = data;
+          showResults(data);
+        } catch (err) {
+          errorMsg.textContent = "Error: " + err.message;
+          errorMsg.classList.add("active");
+        } finally {
+          btn.disabled = false;
+          loading.classList.remove("active");
+        }
+      }
+
+      function showResults(s) {
+        document.getElementById("results").classList.add("active");
+        const badge = document.getElementById("statusBadge");
+        badge.textContent = s.status;
+        badge.className = "status-badge status-" + s.status;
+        document.getElementById("sessionId").textContent = "Session: " + s.id;
+        document.getElementById("resGenre").textContent = s.genre.replace(
+          "_",
+          " ",
+        );
+        document.getElementById("resKey").textContent = s.key;
+        document.getElementById("resTempo").textContent = s.tempo + " BPM";
+        document.getElementById("resTrackCount").textContent = s.tracks.length;
+
+        const list = document.getElementById("trackList");
+        list.innerHTML = "";
+        s.tracks.forEach((t) => {
+          const icon = ICONS[t] || "🎵";
+          const li = document.createElement("li");
+          li.className = "track-item";
+          li.innerHTML = `<div class="track-info"><span class="track-icon">${icon}</span><span class="track-name">${t}</span></div><button class="btn btn-download" onclick="downloadTrack('${s.id}','${t}')">⬇ MIDI</button>`;
+          list.appendChild(li);
+        });
+      }
+
+      function downloadTrack(sid, name) {
+        window.open("/api/exports/" + sid + "/midi/" + name, "_blank");
+      }
+      function downloadCombined() {
+        if (currentSession)
+          window.open("/api/exports/" + currentSession.id + "/midi", "_blank");
+      }
+    </script>
+  </body>
+</html>

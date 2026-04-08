@@ -11,6 +11,7 @@ dependencies = [
     "mido>=1.3.0",
     "pydantic>=2.5",
     "pydantic-settings>=2.1",
+    "mcp>=1.0",
 ]
 
 [project.optional-dependencies]
@@ -35,6 +36,9 @@ dev = [
 all = [
     "audio-engineer[llm,api,audio,dev]",
 ]
+
+[project.scripts]
+audio-engineer-mcp = "audio_engineer.mcp_server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/audio_engineer"]

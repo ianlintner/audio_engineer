@@ -98,4 +98,13 @@ class ProviderRegistry:
             )
 
         logger.info("Routing '%s' to provider '%s'", request.track_name, provider.name)
-        return provider.generate_track(request)
+        try:
+            return provider.generate_track(request)
+        except Exception as exc:
+            logger.exception("Provider '%s' failed for '%s'", provider.name, request.track_name)
+            return TrackResult(
+                track=None,
+                success=False,
+                provider_used=provider.name,
+                error=str(exc),
+            )

@@ -43,7 +43,11 @@ class AudioTrack(BaseModel):
         return self.midi_data is not None
 
     def save_audio(self, path: str | Path) -> Path:
-        """Write raw audio bytes to disk."""
+        """Write raw audio bytes to disk.
+
+        Callers are responsible for sanitising *path* — this method does not
+        guard against path-traversal or writes outside an expected directory.
+        """
         if not self.has_audio:
             raise ValueError(f"Track '{self.name}' has no audio data to save")
         out = Path(path)

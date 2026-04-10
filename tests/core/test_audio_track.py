@@ -1,4 +1,5 @@
 """Tests for AudioTrack unified track model."""
+import pytest
 from audio_engineer.core.audio_track import AudioTrack, TrackType
 
 
@@ -76,3 +77,32 @@ class TestAudioTrack:
     def test_track_type_enum_values(self):
         assert TrackType.MIDI.value == "midi"
         assert TrackType.AUDIO.value == "audio"
+
+    def test_has_audio_empty_bytes_is_false(self):
+        track = AudioTrack(
+            name="empty_bytes",
+            track_type=TrackType.AUDIO,
+            provider="test",
+            audio_data=b"",
+        )
+        assert not track.has_audio
+
+    def test_save_audio_writes_file(self, tmp_path):
+        track = AudioTrack(
+            name="clip",
+            track_type=TrackType.AUDIO,
+            provider="test",
+            audio_data=b"\x00\x01\x02\x03",
+        )
+        out = track.save_audio(tmp_path / "subdir" / "clip.wav")
+        assert out.exists()
+        assert out.read_bytes() == b"\x00\x01\x02\x03"
+
+    def test_save_audio_raises_without_data(self):
+        track = AudioTrack(
+            name="no_data",
+            track_type=TrackType.AUDIO,
+            provider="test",
+        )
+        with pytest.raises(ValueError, match="no audio data"):
+            track.save_audio("/tmp/should_not_exist.wav")

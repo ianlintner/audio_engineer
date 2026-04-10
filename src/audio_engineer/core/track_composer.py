@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import logging
+import re
 from pathlib import Path
 
 from audio_engineer.core.audio_track import AudioTrack, TrackType
@@ -52,12 +53,21 @@ class TrackComposer:
         out_dir = Path(directory)
         out_dir.mkdir(parents=True, exist_ok=True)
         stems: list[Path] = []
+        seen: set[str] = set()
 
         for track in self.get_audio_tracks():
             if not track.has_audio:
                 continue
             ext = _mime_to_ext(track.mime_type)
-            stem_path = out_dir / f"{track.name}{ext}"
+            safe_name = re.sub(r'[^\w\-.]', '_', track.name)
+            base = f"{safe_name}{ext}"
+            if base in seen:
+                counter = 2
+                while f"{safe_name}_{counter}{ext}" in seen:
+                    counter += 1
+                base = f"{safe_name}_{counter}{ext}"
+            seen.add(base)
+            stem_path = out_dir / base
             track.save_audio(stem_path)
             stems.append(stem_path)
             logger.info("Exported audio stem: %s", stem_path)
@@ -106,4 +116,9 @@ def _mime_to_ext(mime_type: str) -> str:
         "audio/ogg": ".ogg",
         "audio/aac": ".aac",
     }
-    return mapping.get(mime_type, ".bin")
+    return mapping.get(mime_type) or _fallback_ext(mime_type)
+
+
+def _fallback_ext(mime_type: str) -> str:
+    logger.warning("Unknown MIME type %r, falling back to .bin", mime_type)
+    return ".bin"

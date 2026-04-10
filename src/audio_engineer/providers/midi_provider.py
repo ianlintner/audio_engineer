@@ -16,7 +16,7 @@ from audio_engineer.core.models import (
     BandMemberConfig,
 )
 from audio_engineer.core.music_theory import ChordProgression, ProgressionFactory
-from audio_engineer.agents.base import SessionContext
+from audio_engineer.agents.base import BaseMusician, SessionContext
 from audio_engineer.agents.musician.drummer import DrummerAgent
 from audio_engineer.agents.musician.bassist import BassistAgent
 from audio_engineer.agents.musician.guitarist import GuitaristAgent
@@ -31,10 +31,12 @@ from audio_engineer.providers.base import (
 logger = logging.getLogger(__name__)
 
 # Map instrument name strings to agent constructors
-_INSTRUMENT_AGENTS: dict[str, type] = {
+_INSTRUMENT_AGENTS: dict[str, type[BaseMusician]] = {
     "drums": DrummerAgent,
     "bass": BassistAgent,
     "electric_guitar": GuitaristAgent,
+    # NOTE: GuitaristAgent currently hardcodes Instrument.ELECTRIC_GUITAR;
+    # acoustic guitar timbres are not yet differentiated at the MIDI level.
     "acoustic_guitar": GuitaristAgent,
     "keys": KeyboardistAgent,
 }
@@ -136,6 +138,10 @@ class MidiProvider(AudioProvider):
                 ref = self._generated_tracks[ref_name]
                 if ref.midi_data:
                     existing[ref.midi_data.instrument.value] = ref.midi_data
+            else:
+                logger.warning(
+                    "Reference track '%s' not found in generated tracks", ref_name
+                )
 
         return SessionContext(
             config=config,

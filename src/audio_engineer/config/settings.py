@@ -19,6 +19,8 @@ class AudioEngineerSettings(BaseSettings):
     # Audio
     soundfont_path: Optional[str] = None
     default_sample_rate: int = 44100
+    audio_format: str = "wav"  # wav, mp3
+    mp3_bitrate: str = "192k"
     output_dir: str = "./output"
 
     # DAW

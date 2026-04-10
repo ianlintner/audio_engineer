@@ -8,7 +8,7 @@ from typing import Any
 
 from audio_engineer.core.models import (
     Genre, Instrument, SessionConfig, SessionStatus, Session,
-    MidiTrackData, SectionDef, MixConfig, RenderConfig,
+    RenderConfig,
 )
 from audio_engineer.core.music_theory import ChordProgression, ProgressionFactory
 from audio_engineer.core.midi_engine import MidiEngine
@@ -20,6 +20,7 @@ from audio_engineer.agents.musician.keyboardist import KeyboardistAgent
 from audio_engineer.agents.engineer.mixer import MixerAgent
 from audio_engineer.agents.engineer.mastering import MasteringAgent
 from audio_engineer.daw import get_backend
+from audio_engineer.providers import ProviderRegistry, MidiProvider, GeminiLyriaProvider
 
 logger = logging.getLogger(__name__)
 
@@ -49,6 +50,11 @@ class SessionOrchestrator:
         self.keyboardist = KeyboardistAgent(llm=llm)
         self.mixer = MixerAgent(llm=llm)
         self.mastering = MasteringAgent(llm=llm)
+
+        # Provider registry
+        self.provider_registry = ProviderRegistry()
+        self.provider_registry.register(MidiProvider(llm=llm))
+        self.provider_registry.register(GeminiLyriaProvider())
 
         # Optional Gemini agents (available when google-genai is installed)
         self._gemini_music: Any = None
@@ -228,8 +234,10 @@ class SessionOrchestrator:
             try:
                 backend = get_backend(backend_name)
                 if backend.is_available():
-                    audio_path = session_dir / f"{session.id}_full.wav"
-                    backend.render_audio(midi_path, audio_path, RenderConfig())
+                    render_cfg = RenderConfig()
+                    audio_ext = f".{render_cfg.format}"
+                    audio_path = session_dir / f"{session.id}_full{audio_ext}"
+                    backend.render_audio(midi_path, audio_path, render_cfg)
                     output_files.append(audio_path)
                 else:
                     logger.warning("Backend '%s' not available, skipping audio render", backend_name)

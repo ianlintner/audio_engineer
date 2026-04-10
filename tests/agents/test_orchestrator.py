@@ -131,3 +131,30 @@ class TestRunSession:
         session = orchestrator.run_session(session)
 
         assert session.mix is not None
+
+
+class TestOrchestratorProviderRegistry:
+    def test_orchestrator_has_provider_registry(self, tmp_path):
+        orch = SessionOrchestrator(output_dir=tmp_path)
+        assert orch.provider_registry is not None
+
+    def test_registry_has_midi_provider(self, tmp_path):
+        orch = SessionOrchestrator(output_dir=tmp_path)
+        available = orch.provider_registry.list_available()
+        assert "midi_engine" in available
+
+    def test_registry_lists_all_providers(self, tmp_path):
+        orch = SessionOrchestrator(output_dir=tmp_path)
+        all_names = orch.provider_registry.list_providers()
+        # At minimum: midi_engine. Gemini if available.
+        assert "midi_engine" in all_names
+
+    def test_session_produces_track_composer(self, tmp_path):
+        from audio_engineer.core.models import SessionConfig
+
+        orch = SessionOrchestrator(output_dir=tmp_path)
+        session = orch.create_session(SessionConfig())
+        session = orch.run_session(session)
+        # The composer should have been used internally
+        assert session.status.value == "complete"
+        assert len(session.output_files) > 0

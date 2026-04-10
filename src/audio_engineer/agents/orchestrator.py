@@ -21,6 +21,7 @@ from audio_engineer.agents.engineer.mixer import MixerAgent
 from audio_engineer.agents.engineer.mastering import MasteringAgent
 from audio_engineer.daw import get_backend
 from audio_engineer.providers import ProviderRegistry, MidiProvider, GeminiLyriaProvider
+from audio_engineer.core.track_composer import TrackComposer
 
 logger = logging.getLogger(__name__)
 

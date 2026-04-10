@@ -71,6 +71,12 @@ class SessionStatus(str, Enum):
     ERROR = "error"
 
 
+class TrackType(str, Enum):
+    """Type of audio track data."""
+    MIDI = "midi"
+    AUDIO = "audio"
+
+
 class KeySignature(BaseModel):
     root: NoteName = NoteName.C
     mode: Mode = Mode.MAJOR
@@ -163,6 +169,7 @@ class MixConfig(BaseModel):
 class RenderConfig(BaseModel):
     sample_rate: int = Field(default=44100, ge=22050, le=96000)
     format: str = Field(default="wav")
+    mp3_bitrate: str = Field(default="192k")
     normalize: bool = True
 
 

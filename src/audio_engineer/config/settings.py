@@ -1,7 +1,6 @@
 """Application settings via pydantic-settings."""
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Optional
 
 from pydantic_settings import BaseSettings
@@ -22,6 +21,11 @@ class AudioEngineerSettings(BaseSettings):
     audio_format: str = "wav"  # wav, mp3
     mp3_bitrate: str = "192k"
     output_dir: str = "./output"
+
+    # Provider routing
+    default_audio_provider: str = "midi_engine"
+    default_midi_provider: str = "midi_engine"
+    enable_gemini_provider: bool = True
 
     # DAW
     preferred_backend: str = "fluidsynth"  # fluidsynth, timidity, export

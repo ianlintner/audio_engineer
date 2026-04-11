@@ -3,7 +3,6 @@
 import pytest
 from audio_engineer.core.models import (
     SessionConfig, Genre, Instrument, SectionDef,
-    KeySignature, NoteName, Mode,
 )
 from audio_engineer.core.constants import GM_DRUMS
 from audio_engineer.agents.base import SessionContext

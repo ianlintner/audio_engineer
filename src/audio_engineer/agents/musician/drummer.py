@@ -4,11 +4,11 @@ from __future__ import annotations
 from typing import Any
 
 from audio_engineer.core.models import (
-    Instrument, Genre, MidiTrackData, NoteEvent, SectionDef,
+    Instrument, Genre, MidiTrackData, NoteEvent,
 )
 from audio_engineer.core.patterns import PatternRepository, DrumPattern, DrumFill
 from audio_engineer.core.constants import GM_DRUMS, TICKS_PER_BEAT
-from audio_engineer.core.midi_engine import MidiEngine, TickConverter
+from audio_engineer.core.midi_engine import TickConverter
 
 from audio_engineer.agents.base import BaseMusician, SessionContext
 

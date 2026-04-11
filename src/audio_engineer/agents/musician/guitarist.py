@@ -9,8 +9,8 @@ from audio_engineer.core.models import (
 from audio_engineer.core.music_theory import (
     ChordProgression, Chord, note_name_to_midi,
 )
-from audio_engineer.core.constants import TICKS_PER_BEAT, GM_PROGRAMS
-from audio_engineer.core.midi_engine import MidiEngine, TickConverter
+from audio_engineer.core.constants import GM_PROGRAMS
+from audio_engineer.core.midi_engine import TickConverter
 
 from audio_engineer.agents.base import BaseMusician, SessionContext
 

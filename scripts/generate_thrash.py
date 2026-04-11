@@ -44,13 +44,13 @@ config = SessionConfig(
 total_bars = sum(s.bars * s.repeats for s in config.structure)
 est_seconds = total_bars * (4 * 60 / config.tempo)
 
-print(f"\n🤘 Thrash Metal Rhythm Section Generator")
+print("\n🤘 Thrash Metal Rhythm Section Generator")
 print(f"{'=' * 50}")
-print(f"Key:    E minor")
+print("Key:    E minor")
 print(f"Tempo:  {config.tempo} BPM")
 print(f"Bars:   {total_bars}")
 print(f"Est:    {est_seconds:.0f}s ({est_seconds/60:.1f} min)")
-print(f"Band:   drums, bass, electric guitar")
+print("Band:   drums, bass, electric guitar")
 print(f"{'=' * 50}\n")
 
 # 1. Generate MIDI tracks via the existing orchestrator
@@ -69,7 +69,7 @@ try:
 
     settings = get_settings()
     if settings.gemini_api_key:
-        print(f"\n🎵 Generating Lyria audio rendition...")
+        print("\n🎵 Generating Lyria audio rendition...")
         agent = MusicGenerationAgent()
         result = agent.generate_clip(
             "Thrash metal instrumental, E minor, 200 BPM. "

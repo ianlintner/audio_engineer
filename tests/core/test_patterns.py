@@ -1,8 +1,7 @@
 """Tests for the pattern repository."""
 
-import pytest
 
-from audio_engineer.core.patterns import PatternRepository, DrumPattern, DrumFill
+from audio_engineer.core.patterns import DrumPattern, DrumFill
 from audio_engineer.core.models import Genre, NoteEvent
 from audio_engineer.core.constants import GM_DRUMS, TICKS_PER_BEAT
 

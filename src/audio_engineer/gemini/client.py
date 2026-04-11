@@ -42,6 +42,8 @@ class GeminiClient:
     @property
     def types(self):
         """Convenience accessor for ``google.genai.types``."""
+        if hasattr(self, "_types") and self._types is not None:
+            return self._types
         from google.genai import types as _types
         return _types
 

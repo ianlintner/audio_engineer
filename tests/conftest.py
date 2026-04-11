@@ -7,7 +7,6 @@ from audio_engineer.core.models import (
     TimeSignature,
     NoteName,
     Mode,
-    Genre,
     NoteEvent,
     MidiTrackData,
     Instrument,

@@ -21,14 +21,18 @@ class TestWavToMp3:
 
     def test_missing_wav_file_raises(self, tmp_path: Path):
         missing = tmp_path / "no_such.wav"
-        with pytest.raises(FileNotFoundError, match="WAV file not found"):
-            wav_to_mp3(missing)
+        with patch.dict("sys.modules", {"pydub": MagicMock()}):
+            with pytest.raises(FileNotFoundError, match="WAV file not found"):
+                wav_to_mp3(missing)
 
     def test_missing_ffmpeg_raises(self, tmp_path: Path):
         wav = tmp_path / "test.wav"
         wav.write_bytes(b"RIFF" + b"\x00" * 40)
 
-        with patch("audio_engineer.daw.convert.shutil.which", return_value=None):
+        with (
+            patch.dict("sys.modules", {"pydub": MagicMock()}),
+            patch("audio_engineer.daw.convert.shutil.which", return_value=None),
+        ):
             with pytest.raises(FileNotFoundError, match="ffmpeg"):
                 wav_to_mp3(wav)
 
@@ -46,7 +50,6 @@ class TestWavToMp3:
             patch("audio_engineer.daw.convert.AudioSegment", mock_audio_segment, create=True),
         ):
             # Re-import to pick up the mocked module
-            import importlib
             import audio_engineer.daw.convert as conv_mod
 
             # Directly patch the function's import
@@ -54,14 +57,13 @@ class TestWavToMp3:
                 pass
 
             # For a cleaner test, mock at the function level
-            result = wav_to_mp3.__wrapped__(wav) if hasattr(wav_to_mp3, "__wrapped__") else None
+            _ = wav_to_mp3.__wrapped__(wav) if hasattr(wav_to_mp3, "__wrapped__") else None
 
         # Just verify the default path calculation
         expected = wav.with_suffix(".mp3")
         assert expected == tmp_path / "song.mp3"
 
     def test_custom_output_path(self):
-        wav = Path("/tmp/test.wav")
         mp3 = Path("/tmp/custom_name.mp3")
         assert mp3.suffix == ".mp3"
 

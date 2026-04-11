@@ -67,7 +67,7 @@ def main():
         band=BandConfig(members=members),
     )
 
-    print(f"\n\U0001f3b8 AI Music Studio - Demo Generator")
+    print("\n\U0001f3b8 AI Music Studio - Demo Generator")
     print(f"{'=' * 50}")
     print(f"Genre:  {config.genre.value}")
     print(f"Key:    {config.key.root.value} {config.key.mode.value}")
@@ -85,9 +85,9 @@ def main():
         backend_name=args.backend,
     )
 
-    print(f"\n\u2705 Session complete!")
+    print("\n\u2705 Session complete!")
     print(f"Status: {session.status.value}")
-    print(f"Output files:")
+    print("Output files:")
     for f in session.output_files:
         print(f"  \U0001f4c4 {f}")
     print()

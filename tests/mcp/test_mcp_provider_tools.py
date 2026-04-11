@@ -1,7 +1,6 @@
 """Tests for list_providers and generate_audio_track MCP tools."""
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
-import pytest
 
 from audio_engineer.providers.base import TrackResult
 from audio_engineer.core.audio_track import AudioTrack, TrackType

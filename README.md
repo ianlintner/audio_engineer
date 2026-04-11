@@ -21,6 +21,10 @@
 - 🤖 **LLM-guided generation** — plug in OpenAI, Anthropic, or any LangChain provider
 - 🎛️ **DAW integration** — FluidSynth, TiMidity, GarageBand, Logic Pro, and raw MIDI/WAV export
 - 🌐 **REST API** — FastAPI server for programmatic session management
+- 🔌 **Multi-provider system** — pluggable `AudioProvider` backends with capability-based routing (`ProviderRegistry`)
+- 🤖 **Google Gemini integration** — full-length music generation via Lyria 3, audio analysis, and text-to-speech
+- 🛠️ **MCP Server** — expose backing-track generation as MCP tools for GitHub Copilot, Claude Code, and other AI coding assistants
+- 🖥️ **Web UI** — lightweight browser-based interface served alongside the REST API
 
 ---
 
@@ -38,6 +42,12 @@ pip install -e ".[api]"
 
 # With LLM providers (OpenAI / Anthropic)
 pip install -e ".[llm]"
+
+# With Google Gemini (Lyria 3 music generation, audio analysis, TTS)
+pip install -e ".[gemini]"
+
+# With audio processing (pydub — WAV/MP3 manipulation)
+pip install -e ".[audio]"
 
 # Everything
 pip install -e ".[all]"
@@ -58,6 +68,12 @@ python scripts/generate_demo.py --genre pop --key C --mode major --with-keys
 
 # Blues in A minor rendered to WAV via FluidSynth
 python scripts/generate_demo.py --genre blues --key A --mode minor --render-audio --backend fluidsynth
+
+# Thrash metal rhythm section at 200 BPM (stress-test script)
+python scripts/generate_thrash.py
+
+# Download and configure a SoundFont for audio rendering
+python scripts/setup_soundfont.py
 
 # Start the REST API server
 pip install -e ".[api]"
@@ -121,7 +137,75 @@ Options:
 
 ---
 
-## 🌐 REST API
+## 🛠️ MCP Server
+
+The MCP server exposes backing-track generation as tools for AI coding assistants (GitHub Copilot, Claude Code, etc.).
+
+```bash
+# Install with MCP support (included in core)
+pip install -e "."
+
+# Run the MCP server (stdio transport)
+audio-engineer-mcp
+# or: python -m audio_engineer.mcp_server
+```
+
+### Available MCP Tools
+
+| Tool | Description |
+| ---- | ----------- |
+| `generate_track` | Generate a full MIDI backing track (genre, key, tempo, instruments, sections) |
+| `generate_game_music` | Quick game music via mood preset (battle, exploration, town, boss, …) |
+| `generate_audio_track` | Route a track request through the provider registry (MIDI or Gemini Lyria) |
+| `list_genres` | List all supported genre presets |
+| `list_game_moods` | List all game music mood presets with descriptions |
+| `list_providers` | List registered audio providers with capabilities and availability |
+
+Set `AUDIO_ENGINEER_OUTPUT` to control where the MCP server writes files.  
+See the **[MCP Server guide](https://ianlintner.github.io/audio_engineer/mcp-server/)** for full details.
+
+---
+
+## 🔌 Multi-Provider System
+
+The `ProviderRegistry` routes generation requests to the best available backend:
+
+1. **`MidiProvider`** — algorithmic MIDI generation (always available, zero dependencies)
+2. **`GeminiLyriaProvider`** — full-length audio via Google Lyria 3 (requires `pip install -e ".[gemini]"` and `AUDIO_ENGINEER_GEMINI_API_KEY`)
+
+Custom providers can be registered at runtime:
+
+```python
+from audio_engineer.providers import ProviderRegistry, AudioProvider, ProviderCapability
+
+registry = ProviderRegistry()
+registry.register(my_custom_provider)
+```
+
+See the **[Providers guide](https://ianlintner.github.io/audio_engineer/providers/)** for details.
+
+---
+
+## 🤖 Google Gemini Integration
+
+The `audio_engineer.gemini` package wraps the Google GenAI SDK for three capabilities:
+
+| Agent | Class | What it does |
+| ----- | ----- | ------------ |
+| Music generation | `MusicGenerationAgent` | Full songs or 30 s clips via Lyria 3 (clip or pro model) |
+| Audio analysis | `AudioAnalysisAgent` | Transcription, genre/mood detection, audio Q&A |
+| Text-to-speech | `TTSAgent` | Narration and vocal scratch tracks |
+
+```bash
+pip install -e ".[gemini]"
+export AUDIO_ENGINEER_GEMINI_API_KEY=your_key_here
+```
+
+See the **[Gemini guide](https://ianlintner.github.io/audio_engineer/gemini/)** for usage examples.
+
+---
+
+
 
 Start the dev server: `python scripts/run_dev.py` (requires `pip install -e ".[api]"`)
 
@@ -139,12 +223,20 @@ Interactive API docs: `http://localhost:8000/docs`
 
 ## ⚙️ Configuration
 
-| Variable       | Description                   | Default    |
-| -------------- | ----------------------------- | ---------- |
-| `OUTPUT_DIR`   | Directory for generated files | `./output` |
-| `LOG_LEVEL`    | Logging verbosity             | `INFO`     |
-| `OPENAI_API_KEY` | OpenAI key for LLM agents   | _(unset)_  |
-| `ANTHROPIC_API_KEY` | Anthropic key for LLM agents | _(unset)_ |
+All settings use the `AUDIO_ENGINEER_` environment variable prefix (or a `.env` file in the project root).
+
+| Variable | Description | Default |
+| -------- | ----------- | ------- |
+| `AUDIO_ENGINEER_OUTPUT_DIR` | Directory for generated files | `./output` |
+| `AUDIO_ENGINEER_LOG_LEVEL` | Logging verbosity | `INFO` |
+| `AUDIO_ENGINEER_OPENAI_API_KEY` | OpenAI key for LLM agents | _(unset)_ |
+| `AUDIO_ENGINEER_ANTHROPIC_API_KEY` | Anthropic key for LLM agents | _(unset)_ |
+| `AUDIO_ENGINEER_GEMINI_API_KEY` | Google Gemini API key (Lyria 3 / audio analysis) | _(unset)_ |
+| `AUDIO_ENGINEER_LLM_PROVIDER` | Active LLM backend: `openai`, `anthropic`, `gemini` | `openai` |
+| `AUDIO_ENGINEER_DEFAULT_AUDIO_PROVIDER` | Default audio generation provider | `midi_engine` |
+| `AUDIO_ENGINEER_SOUNDFONT_PATH` | Path to a `.sf2` SoundFont for FluidSynth rendering | _(unset)_ |
+| `AUDIO_ENGINEER_HOST` | FastAPI server host | `0.0.0.0` |
+| `AUDIO_ENGINEER_PORT` | FastAPI server port | `8000` |
 
 ---
 
@@ -181,9 +273,23 @@ src/audio_engineer/
 │   ├── midi_engine.py       # MIDI file construction
 │   ├── patterns.py          # Genre-specific pattern library
 │   ├── rhythm.py            # Rhythmic utilities
+│   ├── audio_track.py       # AudioTrack model for provider results
+│   ├── track_composer.py    # Higher-level track composition helpers
 │   └── constants.py         # TICKS_PER_BEAT, MIDI note maps, etc.
+├── providers/               # Multi-provider audio generation system
+│   ├── base.py              # AudioProvider ABC, TrackRequest/Result, ProviderCapability
+│   ├── registry.py          # ProviderRegistry with capability-based routing
+│   ├── midi_provider.py     # MidiProvider (algorithmic, zero-dependency)
+│   └── gemini_provider.py   # GeminiLyriaProvider (Lyria 3 audio generation)
+├── gemini/                  # Google Gemini AI integration
+│   ├── client.py            # GeminiClient singleton wrapper
+│   ├── music_gen.py         # MusicGenerationAgent (Lyria 3 clip & pro)
+│   ├── audio_analysis.py    # AudioAnalysisAgent
+│   └── tts.py               # TTSAgent (text-to-speech)
 ├── daw/                     # Audio backends (FluidSynth, TiMidity, GarageBand, Logic Pro)
 ├── api/                     # FastAPI application and route handlers
+├── ui/                      # Static web interface (served by the API)
+├── mcp_server.py            # MCP server entry point (audio-engineer-mcp)
 └── config/                  # Settings and logging configuration
 ```
 
@@ -199,6 +305,9 @@ Topics include:
 - [Quick Start Guide](https://ianlintner.github.io/audio_engineer/quickstart/)
 - [CLI Reference](https://ianlintner.github.io/audio_engineer/cli/)
 - [REST API Reference](https://ianlintner.github.io/audio_engineer/api/)
+- [MCP Server](https://ianlintner.github.io/audio_engineer/mcp-server/)
+- [Multi-Provider System](https://ianlintner.github.io/audio_engineer/providers/)
+- [Gemini Integration](https://ianlintner.github.io/audio_engineer/gemini/)
 - [Architecture](https://ianlintner.github.io/audio_engineer/architecture/)
 - [Agent Guide](https://ianlintner.github.io/audio_engineer/agents/)
 - [Music Theory Internals](https://ianlintner.github.io/audio_engineer/music-theory/)

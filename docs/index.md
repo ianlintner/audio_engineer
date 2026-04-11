@@ -19,6 +19,8 @@ AI musician and engineer agents collaborate to produce genre-aware songs with dr
 
 ## Feature Overview
 
+## Feature Overview
+
 === "Musician Agents"
     - 🥁 **Drummer** — genre-aware kick, snare, and hi-hat patterns
     - 🎸 **Bassist** — root-note bass lines locked to drums and chord changes
@@ -29,10 +31,17 @@ AI musician and engineer agents collaborate to produce genre-aware songs with dr
     - 🎚️ **Mixer** — per-track volume, pan, EQ curves
     - 🔊 **Mastering** — final loudness and metadata
 
+=== "AI & Providers"
+    - 🤖 **LLM support** — OpenAI, Anthropic, or Google Gemini for guided generation
+    - 🎵 **Google Lyria 3** — full-length AI music generation via `MusicGenerationAgent`
+    - 🔌 **Multi-provider system** — `ProviderRegistry` routes requests to the best available backend
+    - 🔊 **Audio analysis & TTS** — `AudioAnalysisAgent` and `TTSAgent` via the Gemini package
+
 === "Infrastructure"
-    - 🤖 **LLM support** — OpenAI, Anthropic, or any LangChain provider
-    - 🎛️ **DAW export** — FluidSynth, TiMidity, GarageBand, Logic Pro, MIDI/WAV
+    - 🛠️ **MCP Server** — expose generation tools for GitHub Copilot, Claude Code, and other AI assistants
     - 🌐 **REST API** — FastAPI server for programmatic session control
+    - 🖥️ **Web UI** — lightweight browser interface served alongside the API
+    - 🎛️ **DAW export** — FluidSynth, TiMidity, GarageBand, Logic Pro, MIDI/WAV
 
 ---
 

@@ -30,6 +30,7 @@ The package ships several optional dependency groups:
 | `dev`      | pytest, ruff — required for development                | `pip install -e ".[dev]"`        |
 | `api`      | FastAPI + Uvicorn REST server                          | `pip install -e ".[api]"`        |
 | `llm`      | LangChain with OpenAI and Anthropic providers          | `pip install -e ".[llm]"`        |
+| `gemini`   | Google GenAI SDK — Lyria 3 music generation, audio analysis, TTS | `pip install -e ".[gemini]"` |
 | `audio`    | pydub for WAV/MP3 processing                           | `pip install -e ".[audio]"`      |
 | `docs`     | MkDocs + Material for building this documentation site | `pip install -e ".[docs]"`       |
 | `all`      | Every extra at once                                    | `pip install -e ".[all]"`        |

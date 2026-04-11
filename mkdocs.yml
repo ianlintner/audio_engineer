@@ -73,7 +73,11 @@ nav:
   - Reference:
       - CLI Reference: cli.md
       - REST API: api.md
+      - MCP Server: mcp-server.md
       - Configuration: configuration.md
+  - Providers & AI:
+      - Multi-Provider System: providers.md
+      - Gemini Integration: gemini.md
   - Internals:
       - Architecture: architecture.md
       - Agents: agents.md

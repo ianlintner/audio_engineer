@@ -1,7 +1,7 @@
 """Tests for DAW backend factory and availability."""
 import pytest
 
-from audio_engineer.daw import get_backend, DAWBackend
+from audio_engineer.daw import get_backend
 from audio_engineer.daw.export import FileExportBackend
 from audio_engineer.daw.fluidsynth import FluidSynthBackend
 from audio_engineer.daw.timidity import TiMidityBackend

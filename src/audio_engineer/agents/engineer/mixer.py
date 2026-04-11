@@ -4,8 +4,7 @@ from __future__ import annotations
 from typing import Any
 
 from audio_engineer.core.models import (
-    Instrument, Genre, MidiTrackData, NoteEvent,
-    MixConfig, MixTrackConfig,
+    Instrument, Genre, MidiTrackData, MixConfig, MixTrackConfig,
 )
 
 from audio_engineer.agents.base import BaseEngineer, SessionContext
@@ -82,9 +81,6 @@ class MixerAgent(BaseEngineer):
             if tc is None:
                 result.append(track)
                 continue
-
-            cc_volume = int(tc.volume * 127)
-            cc_pan = int((tc.pan + 1.0) / 2.0 * 127)  # -1..1 -> 0..127
 
             # We store CC info as metadata; actual CC insertion happens
             # at MIDI export time via MidiTrackBuilder. For now, just

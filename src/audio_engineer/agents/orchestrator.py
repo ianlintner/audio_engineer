@@ -8,7 +8,7 @@ from typing import Any
 
 from audio_engineer.core.models import (
     Genre, Instrument, SessionConfig, SessionStatus, Session,
-    MidiTrackData, SectionDef, MixConfig, RenderConfig,
+    RenderConfig,
 )
 from audio_engineer.core.music_theory import ChordProgression, ProgressionFactory
 from audio_engineer.core.midi_engine import MidiEngine

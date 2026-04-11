@@ -226,3 +226,134 @@ class ProgressionFactory:
     def rock_ballad(key_root: str) -> ChordProgression:
         """I - vi - IV - V ballad progression."""
         return ChordProgression.from_string("I - vi - IV - V", key_root, "major")
+
+    @staticmethod
+    def jazz_ii_V_I(key_root: str) -> ChordProgression:
+        """ii min7 - V dom7 - I maj7 (the core jazz cadence)."""
+        scale = Scale(key_root, "major")
+        ii_root = NOTE_NAMES[scale.note_at_degree(2, 0) % 12]
+        V_root = NOTE_NAMES[scale.note_at_degree(5, 0) % 12]
+        I_root = NOTE_NAMES[scale.note_at_degree(1, 0) % 12]
+        return ChordProgression([
+            (Chord(ii_root, "min7"), 4.0),
+            (Chord(V_root, "dom7"), 4.0),
+            (Chord(I_root, "maj7"), 8.0),
+        ])
+
+    @staticmethod
+    def jazz_turnaround(key_root: str) -> ChordProgression:
+        """I maj7 - vi min7 - ii min7 - V dom7 turnaround."""
+        scale = Scale(key_root, "major")
+        I_root = NOTE_NAMES[scale.note_at_degree(1, 0) % 12]
+        vi_root = NOTE_NAMES[scale.note_at_degree(6, 0) % 12]
+        ii_root = NOTE_NAMES[scale.note_at_degree(2, 0) % 12]
+        V_root = NOTE_NAMES[scale.note_at_degree(5, 0) % 12]
+        return ChordProgression([
+            (Chord(I_root, "maj7"), 4.0),
+            (Chord(vi_root, "min7"), 4.0),
+            (Chord(ii_root, "min7"), 4.0),
+            (Chord(V_root, "dom7"), 4.0),
+        ])
+
+    @staticmethod
+    def jazz_rhythm_changes(key_root: str) -> ChordProgression:
+        """A-section of Rhythm Changes (Gershwin): I - vi - ii - V pattern."""
+        scale = Scale(key_root, "major")
+        I_root = NOTE_NAMES[scale.note_at_degree(1, 0) % 12]
+        vi_root = NOTE_NAMES[scale.note_at_degree(6, 0) % 12]
+        ii_root = NOTE_NAMES[scale.note_at_degree(2, 0) % 12]
+        V_root = NOTE_NAMES[scale.note_at_degree(5, 0) % 12]
+        IV_root = NOTE_NAMES[scale.note_at_degree(4, 0) % 12]
+        return ChordProgression([
+            (Chord(I_root, "maj7"), 2.0),
+            (Chord(vi_root, "dom7"), 2.0),
+            (Chord(ii_root, "min7"), 2.0),
+            (Chord(V_root, "dom7"), 2.0),
+            (Chord(I_root, "maj7"), 2.0),
+            (Chord(IV_root, "dom7"), 2.0),
+            (Chord(I_root, "maj7"), 2.0),
+            (Chord(V_root, "dom7"), 2.0),
+        ])
+
+    @staticmethod
+    def blues_jazz(key_root: str) -> ChordProgression:
+        """Jazz blues with tritone substitutions and ii-V pairs."""
+        scale = Scale(key_root, "major")
+        I_root = NOTE_NAMES[scale.note_at_degree(1, 0) % 12]
+        IV_root = NOTE_NAMES[scale.note_at_degree(4, 0) % 12]
+        V_root = NOTE_NAMES[scale.note_at_degree(5, 0) % 12]
+        ii_root = NOTE_NAMES[scale.note_at_degree(2, 0) % 12]
+        vi_root = NOTE_NAMES[scale.note_at_degree(6, 0) % 12]
+        return ChordProgression([
+            (Chord(I_root, "dom7"), 4.0),
+            (Chord(IV_root, "dom7"), 4.0),
+            (Chord(I_root, "dom7"), 4.0),
+            (Chord(I_root, "dom7"), 4.0),
+            (Chord(IV_root, "dom7"), 4.0),
+            (Chord(IV_root, "dom7"), 4.0),
+            (Chord(I_root, "dom7"), 4.0),
+            (Chord(vi_root, "min7"), 4.0),
+            (Chord(ii_root, "min7"), 4.0),
+            (Chord(V_root, "dom7"), 4.0),
+            (Chord(I_root, "dom7"), 4.0),
+            (Chord(ii_root, "min7"), 2.0),
+            (Chord(V_root, "dom7"), 2.0),
+        ])
+
+    @staticmethod
+    def modal_dorian(key_root: str) -> ChordProgression:
+        """Dorian modal vamp: i min7 - IV dom7."""
+        i_chord = Chord(key_root, "min7")
+        IV_root = NOTE_NAMES[(NOTE_NAMES.index(key_root.upper()) + 5) % 12]
+        return ChordProgression([
+            (i_chord, 8.0),
+            (Chord(IV_root, "dom7"), 8.0),
+        ])
+
+    @staticmethod
+    def bossa_nova(key_root: str) -> ChordProgression:
+        """Bossa nova: ii min7 - V dom7 - I maj7 with sus coloring."""
+        scale = Scale(key_root, "major")
+        ii_root = NOTE_NAMES[scale.note_at_degree(2, 0) % 12]
+        V_root = NOTE_NAMES[scale.note_at_degree(5, 0) % 12]
+        I_root = NOTE_NAMES[scale.note_at_degree(1, 0) % 12]
+        iii_root = NOTE_NAMES[scale.note_at_degree(3, 0) % 12]
+        return ChordProgression([
+            (Chord(I_root, "maj7"), 4.0),
+            (Chord(iii_root, "min7"), 2.0),
+            (Chord(ii_root, "min7"), 2.0),
+            (Chord(V_root, "dom7"), 4.0),
+            (Chord(I_root, "maj7"), 4.0),
+        ])
+
+    @staticmethod
+    def minor_i_VII_VI_VII(key_root: str) -> ChordProgression:
+        """Natural minor vamp: i - bVII - bVI - bVII."""
+        return ChordProgression.from_string("I - VII - VI - VII", key_root, "minor")
+
+    @staticmethod
+    def gospel_I_IV_I_V(key_root: str) -> ChordProgression:
+        """Gospel: I - IV - I - V turnaround."""
+        return ChordProgression.from_string("I - IV - I - V", key_root, "major")
+
+    @staticmethod
+    def metal_power_I_VII_VI(key_root: str) -> ChordProgression:
+        """Metal power chord progression: I5 - bVII5 - bVI5 - bVII5."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        bVII_root = NOTE_NAMES[(root_idx + 10) % 12]
+        bVI_root = NOTE_NAMES[(root_idx + 8) % 12]
+        return ChordProgression([
+            (Chord(key_root, "power"), 4.0),
+            (Chord(bVII_root, "power"), 4.0),
+            (Chord(bVI_root, "power"), 4.0),
+            (Chord(bVII_root, "power"), 4.0),
+        ])
+
+    @staticmethod
+    def funk_I7_IV7(key_root: str) -> ChordProgression:
+        """Funk dominant 7th vamp: I7 - IV7."""
+        IV_root = NOTE_NAMES[(NOTE_NAMES.index(key_root.strip().upper()) + 5) % 12]
+        return ChordProgression([
+            (Chord(key_root, "dom7"), 8.0),
+            (Chord(IV_root, "dom7"), 8.0),
+        ])

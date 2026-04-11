@@ -60,26 +60,43 @@ class FluidSynthBackend(DAWBackend):
     ) -> Path:
         cfg = config or RenderConfig()
         soundfont = self._get_soundfont()
-        output_path = output_path.with_suffix(".wav")
-        output_path.parent.mkdir(parents=True, exist_ok=True)
+        wav_path = output_path.with_suffix(".wav")
+        wav_path.parent.mkdir(parents=True, exist_ok=True)
 
         cmd = [
             "fluidsynth", "-ni",
             str(soundfont),
             str(midi_path),
-            "-F", str(output_path),
+            "-F", str(wav_path),
             "-r", str(cfg.sample_rate),
         ]
         result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
         if result.returncode != 0:
             raise RuntimeError(f"fluidsynth failed: {result.stderr.strip()}")
-        return output_path
+
+        if cfg.format == "mp3":
+            from .convert import wav_to_mp3
+
+            mp3_path = output_path.with_suffix(".mp3")
+            wav_to_mp3(wav_path, mp3_path, bitrate=cfg.mp3_bitrate)
+            wav_path.unlink(missing_ok=True)
+            return mp3_path
+
+        return wav_path
 
     def is_available(self) -> bool:
         return shutil.which("fluidsynth") is not None
 
     def supported_formats(self) -> list[AudioFormat]:
-        return [AudioFormat.WAV]
+        formats = [AudioFormat.WAV]
+        try:
+            from .convert import wav_to_mp3  # noqa: F401
+            import shutil
+            if shutil.which("ffmpeg") or shutil.which("avconv"):
+                formats.append(AudioFormat.MP3)
+        except ImportError:
+            pass
+        return formats
 
     def get_info(self) -> DAWInfo:
         return DAWInfo(

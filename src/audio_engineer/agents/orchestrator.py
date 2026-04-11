@@ -20,8 +20,18 @@ from audio_engineer.agents.musician.keyboardist import KeyboardistAgent
 from audio_engineer.agents.engineer.mixer import MixerAgent
 from audio_engineer.agents.engineer.mastering import MasteringAgent
 from audio_engineer.daw import get_backend
+from audio_engineer.providers import ProviderRegistry, MidiProvider, GeminiLyriaProvider
 
 logger = logging.getLogger(__name__)
+
+
+def _gemini_available() -> bool:
+    """Check if the Gemini integration is importable."""
+    try:
+        import audio_engineer.gemini  # noqa: F401
+        return True
+    except Exception:
+        return False
 
 
 class SessionOrchestrator:
@@ -40,6 +50,29 @@ class SessionOrchestrator:
         self.keyboardist = KeyboardistAgent(llm=llm)
         self.mixer = MixerAgent(llm=llm)
         self.mastering = MasteringAgent(llm=llm)
+
+        # Provider registry
+        self.provider_registry = ProviderRegistry()
+        self.provider_registry.register(MidiProvider(llm=llm))
+        self.provider_registry.register(GeminiLyriaProvider())
+
+        # Optional Gemini agents (available when google-genai is installed)
+        self._gemini_music: Any = None
+        self._gemini_analysis: Any = None
+        self._gemini_tts: Any = None
+        if _gemini_available():
+            try:
+                from audio_engineer.gemini import (
+                    MusicGenerationAgent,
+                    AudioAnalysisAgent,
+                    TTSAgent,
+                )
+                self._gemini_music = MusicGenerationAgent()
+                self._gemini_analysis = AudioAnalysisAgent()
+                self._gemini_tts = TTSAgent()
+                logger.info("Gemini agents initialised")
+            except Exception as exc:
+                logger.debug("Gemini agents not available: %s", exc)
 
     def create_session(self, config: SessionConfig | None = None) -> Session:
         """Create a new session."""
@@ -201,13 +234,37 @@ class SessionOrchestrator:
             try:
                 backend = get_backend(backend_name)
                 if backend.is_available():
-                    audio_path = session_dir / f"{session.id}_full.wav"
-                    backend.render_audio(midi_path, audio_path, RenderConfig())
+                    render_cfg = RenderConfig()
+                    audio_ext = f".{render_cfg.format}"
+                    audio_path = session_dir / f"{session.id}_full{audio_ext}"
+                    backend.render_audio(midi_path, audio_path, render_cfg)
                     output_files.append(audio_path)
                 else:
                     logger.warning("Backend '%s' not available, skipping audio render", backend_name)
             except Exception as e:
                 logger.warning("Audio render failed: %s", e)
+
+        # Generate Lyria audio rendition if Gemini music agent is available
+        if self._gemini_music is not None:
+            try:
+                config = session.config
+                instr_names = [
+                    m.instrument.value
+                    for m in config.band.members if m.enabled
+                ]
+                result = self._gemini_music.generate_from_session(
+                    genre=config.genre.value,
+                    key=f"{config.key.root.value} {config.key.mode.value}",
+                    tempo=config.tempo,
+                    structure=[s.name for s in config.structure],
+                    instruments=instr_names,
+                    instrumental=True,
+                )
+                lyria_path = session_dir / f"{session.id}_lyria.mp3"
+                result.save(lyria_path)
+                output_files.append(lyria_path)
+            except Exception as e:
+                logger.warning("Lyria music generation skipped: %s", e)
 
         # Export session config as JSON
         config_path = session_dir / f"{session.id}_config.json"

@@ -1,5 +1,6 @@
 """DAW integration layer - backend discovery and audio rendering."""
 from .base import AudioFormat, DAWBackend, DAWInfo
+from .convert import wav_to_mp3
 from .export import FileExportBackend
 from .fluidsynth import FluidSynthBackend
 from .timidity import TiMidityBackend
@@ -44,4 +45,5 @@ __all__ = [
     "GarageBandBackend",
     "LogicProBackend",
     "get_backend",
+    "wav_to_mp3",
 ]

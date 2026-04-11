@@ -196,6 +196,69 @@ def list_root_notes() -> list[str]:
 
 
 @mcp.tool()
+def list_providers() -> dict:
+    """List all registered audio providers with their capabilities and availability.
+
+    Returns a mapping of provider name → info dict with keys:
+    - capabilities: list of capability strings
+    - available: whether the provider is currently usable
+    """
+    result: dict = {}
+    registry = _orchestrator.provider_registry
+    for name in registry.list_providers():
+        provider = registry.get(name)
+        result[name] = {
+            "capabilities": [c.value for c in provider.capabilities],
+            "available": provider.is_available(),
+        }
+    return result
+
+
+@mcp.tool()
+def generate_audio_track(
+    track_name: str,
+    description: str,
+    genre: Optional[str] = None,
+    key: Optional[str] = None,
+    tempo: Optional[int] = None,
+    duration_seconds: Optional[float] = None,
+    style_hints: Optional[list] = None,
+    provider: Optional[str] = None,
+) -> dict:
+    """Generate an audio track via a registered provider.
+
+    Routes the request through the provider registry. Specify ``provider``
+    to request a particular engine (e.g. ``midi_engine`` or ``gemini_lyria``);
+    omit to use default routing.
+
+    Returns a dict with keys:
+    - success: bool
+    - provider_used: str
+    - error: error message (on failure)
+    """
+    from audio_engineer.providers import TrackRequest
+
+    request = TrackRequest(
+        track_name=track_name,
+        description=description,
+        preferred_provider=provider,
+        genre=genre,
+        key=key,
+        tempo=tempo,
+        duration_seconds=duration_seconds,
+        style_hints=style_hints or [],
+    )
+    result = _orchestrator.provider_registry.generate(request)
+    response: dict = {
+        "success": result.success,
+        "provider_used": result.provider_used,
+    }
+    if result.error:
+        response["error"] = result.error
+    return response
+
+
+@mcp.tool()
 def list_game_moods() -> dict[str, str]:
     """List all game music mood presets with descriptions.
 

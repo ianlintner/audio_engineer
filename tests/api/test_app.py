@@ -1,9 +1,11 @@
 """Tests for the FastAPI application."""
 
 import pytest
-from fastapi.testclient import TestClient
 
-from audio_engineer.api.app import create_app
+fastapi = pytest.importorskip("fastapi", reason="fastapi not installed; install with pip install audio-engineer[api]")
+from fastapi.testclient import TestClient  # noqa: E402
+
+from audio_engineer.api.app import create_app  # noqa: E402
 
 
 @pytest.fixture

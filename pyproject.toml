@@ -25,6 +25,9 @@ api = [
     "uvicorn[standard]>=0.27",
     "python-multipart>=0.0.9",
 ]
+gemini = [
+    "google-genai>=1.70",
+]
 audio = [
     "pydub>=0.25",
 ]
@@ -41,7 +44,7 @@ docs = [
     "mkdocs-literate-nav>=0.6",
 ]
 all = [
-    "audio-engineer[llm,api,audio,dev,docs]",
+    "audio-engineer[llm,api,gemini,audio,dev,docs]",
 ]
 
 [project.scripts]

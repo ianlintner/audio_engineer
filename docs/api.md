@@ -158,7 +158,7 @@ curl -O http://localhost:8000/sessions/<id>/export
 SESSION=$(curl -s -X POST http://localhost:8000/sessions \
   -H "Content-Type: application/json" \
   -d '{"genre":"blues","key":"A","mode":"minor","tempo":110}' \
-  | python -c "import sys,json; print(json.load(sys.stdin)['id'])")
+  | jq -r '.id')
 
 # Run
 curl -X POST http://localhost:8000/sessions/$SESSION/run

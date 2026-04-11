@@ -3,7 +3,7 @@
 import pytest
 from audio_engineer.core.models import (
     SessionConfig, Genre, Instrument, MidiTrackData,
-    NoteEvent, MixConfig, SectionDef,
+    NoteEvent, MixConfig,
 )
 from audio_engineer.agents.base import SessionContext
 from audio_engineer.agents.engineer.mixer import MixerAgent

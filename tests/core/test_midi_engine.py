@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from audio_engineer.core.midi_engine import MidiEngine, MidiTrackBuilder, TickConverter
+from audio_engineer.core.midi_engine import MidiTrackBuilder, TickConverter
 from audio_engineer.core.models import NoteEvent, MidiTrackData, Instrument, TimeSignature
 from audio_engineer.core.constants import TICKS_PER_BEAT
 

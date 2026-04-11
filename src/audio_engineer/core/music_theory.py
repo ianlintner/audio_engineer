@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import re
 from .constants import NOTE_NAMES, SCALE_FORMULAS, CHORD_FORMULAS
 
 
@@ -78,8 +77,7 @@ class Scale:
 
     def contains(self, midi_note: int) -> bool:
         """Check if a MIDI note belongs to this scale (any octave)."""
-        note_class = (midi_note - self._root_idx) % 12
-        # Adjust for root: check if (midi_note's pitch class - root) mod 12 is in intervals
+        # Check if (midi_note's pitch class - root) mod 12 is in intervals
         pc = (midi_note % 12 - self._root_idx) % 12
         return pc in self._intervals
 
@@ -123,7 +121,6 @@ class Chord:
 
         # Determine if major or minor from case
         roman_map_upper = {"I": 1, "II": 2, "III": 3, "IV": 4, "V": 5, "VI": 6, "VII": 7}
-        roman_map_lower = {"i": 1, "ii": 2, "iii": 3, "iv": 4, "v": 5, "vi": 6, "vii": 7}
 
         is_minor = clean == clean.lower() and clean.upper() in roman_map_upper
         degree_str = clean.upper()

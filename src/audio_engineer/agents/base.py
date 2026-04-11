@@ -2,13 +2,13 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional
+from typing import Any
 
 from pydantic import BaseModel, Field
 
 from audio_engineer.core.models import (
-    Instrument, Genre, SessionConfig, MidiTrackData,
-    SectionDef, MixConfig, KeySignature,
+    Instrument, SessionConfig, MidiTrackData,
+    SectionDef,
 )
 from audio_engineer.core.music_theory import ChordProgression
 from audio_engineer.core.midi_engine import MidiEngine

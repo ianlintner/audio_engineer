@@ -38,3 +38,6 @@ htmlcov/
 
 # Project outputs
 output/
+
+# MkDocs build output
+site/

@@ -10,7 +10,6 @@ from audio_engineer.core.music_theory import (
     ChordProgression,
     ProgressionFactory,
 )
-from audio_engineer.core.constants import NOTE_NAMES
 
 
 class TestNoteConversion:

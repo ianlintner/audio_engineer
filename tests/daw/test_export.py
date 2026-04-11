@@ -4,7 +4,6 @@ from pathlib import Path
 import pytest
 
 from audio_engineer.daw.export import FileExportBackend
-from audio_engineer.daw.base import AudioFormat
 
 
 @pytest.fixture

@@ -16,11 +16,9 @@ from audio_engineer.core.models import (
     NoteEvent,
     MidiTrackData,
     BandConfig,
-    BandMemberConfig,
     Session,
     MixConfig,
     EQBand,
-    EffectConfig,
     MixTrackConfig,
 )
 

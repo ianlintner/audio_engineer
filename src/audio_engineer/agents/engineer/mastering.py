@@ -5,7 +5,7 @@ from typing import Any
 
 from pydantic import BaseModel, Field
 
-from audio_engineer.core.models import MidiTrackData, MixConfig
+from audio_engineer.core.models import MidiTrackData
 
 from audio_engineer.agents.base import BaseEngineer, SessionContext
 

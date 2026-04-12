@@ -619,8 +619,4 @@ def resolve_genre(text: str) -> Genre | None:
         return Genre(enum_key)
     except ValueError:
         pass
-    # Substring match for very short queries
-    for alias, genre in GENRE_ALIASES.items():
-        if key in alias or alias in key:
-            return genre
     return None

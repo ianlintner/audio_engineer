@@ -170,14 +170,14 @@ class TestGenreBlend:
 
     def test_weighted_primary(self):
         blend = GenreBlend(
-            genres=[Genre.ROCK if hasattr(Genre, "ROCK") else Genre.CLASSIC_ROCK, Genre.JAZZ, Genre.FUNK],
+            genres=[Genre.CLASSIC_ROCK, Genre.JAZZ, Genre.FUNK],
             weights=[0.5, 0.3, 0.2],
         )
-        assert blend.primary.value in ("classic_rock", "rock")
+        assert blend.primary == Genre.CLASSIC_ROCK
         assert sum(blend.normalised_weights) == pytest.approx(1.0)
 
     def test_max_4_genres(self):
-        with pytest.raises(Exception):
+        with pytest.raises(Exception):  # noqa: PT011 — Pydantic raises ValidationError
             GenreBlend(genres=[Genre.POP, Genre.JAZZ, Genre.FUNK, Genre.BLUES, Genre.REGGAE])
 
 

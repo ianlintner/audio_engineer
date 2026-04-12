@@ -357,3 +357,259 @@ class ProgressionFactory:
             (Chord(key_root, "dom7"), 8.0),
             (Chord(IV_root, "dom7"), 8.0),
         ])
+
+    # ------------------------------------------------------------------
+    # Expanded progressions for new genres
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def indie_I_vi_iii_IV(key_root: str) -> ChordProgression:
+        """Indie / dream-pop: I - vi - iii - IV."""
+        return ChordProgression.from_string("I - vi - iii - IV", key_root, "major")
+
+    @staticmethod
+    def grunge_minor_vamp(key_root: str) -> ChordProgression:
+        """Grunge minor power vamp: i - bIII - bVII - IV."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        bIII = NOTE_NAMES[(root_idx + 3) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        IV = NOTE_NAMES[(root_idx + 5) % 12]
+        return ChordProgression([
+            (Chord(key_root, "power"), 4.0),
+            (Chord(bIII, "power"), 4.0),
+            (Chord(bVII, "power"), 4.0),
+            (Chord(IV, "power"), 4.0),
+        ])
+
+    @staticmethod
+    def prog_rock_epic(key_root: str) -> ChordProgression:
+        """Prog-rock: I - III - bVII - IV (mixed-mode colour)."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        III = NOTE_NAMES[(root_idx + 4) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        IV = NOTE_NAMES[(root_idx + 5) % 12]
+        return ChordProgression([
+            (Chord(key_root, "maj7"), 4.0),
+            (Chord(III, "major"), 4.0),
+            (Chord(bVII, "major"), 4.0),
+            (Chord(IV, "major"), 4.0),
+        ])
+
+    @staticmethod
+    def disco_I_vi_ii_V(key_root: str) -> ChordProgression:
+        """Disco / dance: I - vi - ii - V."""
+        scale = Scale(key_root, "major")
+        I_root = NOTE_NAMES[scale.note_at_degree(1, 0) % 12]
+        vi = NOTE_NAMES[scale.note_at_degree(6, 0) % 12]
+        ii = NOTE_NAMES[scale.note_at_degree(2, 0) % 12]
+        V = NOTE_NAMES[scale.note_at_degree(5, 0) % 12]
+        return ChordProgression([
+            (Chord(I_root, "major"), 4.0),
+            (Chord(vi, "minor"), 4.0),
+            (Chord(ii, "minor"), 4.0),
+            (Chord(V, "dom7"), 4.0),
+        ])
+
+    @staticmethod
+    def synthwave_i_III_VII_VI(key_root: str) -> ChordProgression:
+        """Synthwave / retrowave: i - bIII - bVII - bVI."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        bIII = NOTE_NAMES[(root_idx + 3) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        bVI = NOTE_NAMES[(root_idx + 8) % 12]
+        return ChordProgression([
+            (Chord(key_root, "minor"), 4.0),
+            (Chord(bIII, "major"), 4.0),
+            (Chord(bVII, "major"), 4.0),
+            (Chord(bVI, "major"), 4.0),
+        ])
+
+    @staticmethod
+    def trap_minor_vamp(key_root: str) -> ChordProgression:
+        """Trap / dark hip-hop: i - bVI - bIII - bVII."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        bVI = NOTE_NAMES[(root_idx + 8) % 12]
+        bIII = NOTE_NAMES[(root_idx + 3) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        return ChordProgression([
+            (Chord(key_root, "minor"), 4.0),
+            (Chord(bVI, "major"), 4.0),
+            (Chord(bIII, "major"), 4.0),
+            (Chord(bVII, "major"), 4.0),
+        ])
+
+    @staticmethod
+    def trance_uplifting(key_root: str) -> ChordProgression:
+        """Trance / uplifting: vi - IV - I - V."""
+        return ChordProgression.from_string("vi - IV - I - V", key_root, "major")
+
+    @staticmethod
+    def dubstep_halftime(key_root: str) -> ChordProgression:
+        """Dubstep / halftime: i - bVII (two-chord minor vamp)."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        return ChordProgression([
+            (Chord(key_root, "minor"), 8.0),
+            (Chord(bVII, "major"), 8.0),
+        ])
+
+    @staticmethod
+    def dnb_minor_tension(key_root: str) -> ChordProgression:
+        """Drum-and-bass: i - iv - bVI - bVII."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        iv = NOTE_NAMES[(root_idx + 5) % 12]
+        bVI = NOTE_NAMES[(root_idx + 8) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        return ChordProgression([
+            (Chord(key_root, "minor"), 4.0),
+            (Chord(iv, "minor"), 4.0),
+            (Chord(bVI, "major"), 4.0),
+            (Chord(bVII, "major"), 4.0),
+        ])
+
+    @staticmethod
+    def salsa_montuno(key_root: str) -> ChordProgression:
+        """Salsa / son montuno: I - IV - V - I."""
+        return ChordProgression.from_string("I - IV - V - I", key_root, "major")
+
+    @staticmethod
+    def reggaeton_i_IV_V(key_root: str) -> ChordProgression:
+        """Reggaeton: i - iv - V (minor with dominant turnaround)."""
+        scale = Scale(key_root, "minor")
+        i = NOTE_NAMES[scale.note_at_degree(1, 0) % 12]
+        iv = NOTE_NAMES[scale.note_at_degree(4, 0) % 12]
+        V_root = NOTE_NAMES[(NOTE_NAMES.index(key_root.strip().upper()) + 7) % 12]
+        return ChordProgression([
+            (Chord(i, "minor"), 4.0),
+            (Chord(iv, "minor"), 4.0),
+            (Chord(V_root, "major"), 4.0),
+            (Chord(i, "minor"), 4.0),
+        ])
+
+    @staticmethod
+    def ska_offbeat(key_root: str) -> ChordProgression:
+        """Ska: I - IV - V - IV (bright, upbeat)."""
+        return ChordProgression.from_string("I - IV - V - IV", key_root, "major")
+
+    @staticmethod
+    def afrobeat_vamp(key_root: str) -> ChordProgression:
+        """Afrobeat: extended i7 - IV7 vamp."""
+        IV_root = NOTE_NAMES[(NOTE_NAMES.index(key_root.strip().upper()) + 5) % 12]
+        return ChordProgression([
+            (Chord(key_root, "min7"), 8.0),
+            (Chord(IV_root, "dom7"), 4.0),
+            (Chord(key_root, "min7"), 4.0),
+        ])
+
+    @staticmethod
+    def flamenco_phrygian(key_root: str) -> ChordProgression:
+        """Flamenco Phrygian cadence: iv - bIII - bII - I."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        iv = NOTE_NAMES[(root_idx + 5) % 12]
+        bIII = NOTE_NAMES[(root_idx + 3) % 12]
+        bII = NOTE_NAMES[(root_idx + 1) % 12]
+        return ChordProgression([
+            (Chord(iv, "minor"), 4.0),
+            (Chord(bIII, "major"), 4.0),
+            (Chord(bII, "major"), 4.0),
+            (Chord(key_root, "major"), 4.0),
+        ])
+
+    @staticmethod
+    def middle_eastern_hijaz(key_root: str) -> ChordProgression:
+        """Middle-Eastern Hijaz mode colour: I - bII - I - bVII."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        bII = NOTE_NAMES[(root_idx + 1) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        return ChordProgression([
+            (Chord(key_root, "major"), 4.0),
+            (Chord(bII, "major"), 4.0),
+            (Chord(key_root, "major"), 4.0),
+            (Chord(bVII, "minor"), 4.0),
+        ])
+
+    @staticmethod
+    def classical_I_IV_V_I(key_root: str) -> ChordProgression:
+        """Classical: I - IV - V - I (authentic cadence)."""
+        return ChordProgression.from_string("I - IV - V - I", key_root, "major")
+
+    @staticmethod
+    def baroque_circle_of_fifths(key_root: str) -> ChordProgression:
+        """Baroque circle-of-fifths: I - IV - vii - iii - vi - ii - V - I."""
+        return ChordProgression.from_string(
+            "I - IV - vii - iii - vi - ii - V - I", key_root, "major"
+        )
+
+    @staticmethod
+    def cinematic_epic(key_root: str) -> ChordProgression:
+        """Cinematic / epic: i - bVI - bIII - bVII."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        bVI = NOTE_NAMES[(root_idx + 8) % 12]
+        bIII = NOTE_NAMES[(root_idx + 3) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        return ChordProgression([
+            (Chord(key_root, "minor"), 4.0),
+            (Chord(bVI, "major"), 4.0),
+            (Chord(bIII, "major"), 4.0),
+            (Chord(bVII, "major"), 4.0),
+        ])
+
+    @staticmethod
+    def bluegrass_I_IV_V(key_root: str) -> ChordProgression:
+        """Bluegrass: I - IV - V - I."""
+        return ChordProgression.from_string("I - IV - V - I", key_root, "major")
+
+    @staticmethod
+    def neo_soul_ii_V_I(key_root: str) -> ChordProgression:
+        """Neo-soul: ii min9 - V dom9 - I maj9."""
+        scale = Scale(key_root, "major")
+        ii = NOTE_NAMES[scale.note_at_degree(2, 0) % 12]
+        V = NOTE_NAMES[scale.note_at_degree(5, 0) % 12]
+        I_root = NOTE_NAMES[scale.note_at_degree(1, 0) % 12]
+        return ChordProgression([
+            (Chord(ii, "min9"), 4.0),
+            (Chord(V, "dom9"), 4.0),
+            (Chord(I_root, "maj9"), 8.0),
+        ])
+
+    @staticmethod
+    def worship_I_IV_vi_V(key_root: str) -> ChordProgression:
+        """Worship / praise: I - IV - vi - V."""
+        return ChordProgression.from_string("I - IV - vi - V", key_root, "major")
+
+    @staticmethod
+    def post_rock_ambient(key_root: str) -> ChordProgression:
+        """Post-rock: I - iii - vi - IV (slow, expansive)."""
+        return ChordProgression.from_string("I - iii - vi - IV", key_root, "major")
+
+    @staticmethod
+    def math_rock_odd(key_root: str) -> ChordProgression:
+        """Math-rock: I - III - vi - ii (non-obvious voicings)."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        III = NOTE_NAMES[(root_idx + 4) % 12]
+        vi = NOTE_NAMES[(root_idx + 9) % 12]
+        ii = NOTE_NAMES[(root_idx + 2) % 12]
+        return ChordProgression([
+            (Chord(key_root, "major"), 3.5),
+            (Chord(III, "major"), 3.5),
+            (Chord(vi, "minor"), 3.5),
+            (Chord(ii, "minor"), 3.5),
+        ])
+
+    @staticmethod
+    def emo_vi_IV_I_V(key_root: str) -> ChordProgression:
+        """Emo: vi - IV - I - V."""
+        return ChordProgression.from_string("vi - IV - I - V", key_root, "major")
+
+    @staticmethod
+    def industrial_power_riff(key_root: str) -> ChordProgression:
+        """Industrial / EBM: i5 - bII5 - i5 - bVII5."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        bII = NOTE_NAMES[(root_idx + 1) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        return ChordProgression([
+            (Chord(key_root, "power"), 4.0),
+            (Chord(bII, "power"), 4.0),
+            (Chord(key_root, "power"), 4.0),
+            (Chord(bVII, "power"), 4.0),
+        ])

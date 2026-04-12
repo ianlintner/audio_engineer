@@ -269,39 +269,229 @@ class SessionOrchestrator:
                 "verse": ProgressionFactory.twelve_bar_blues(key_root),
                 "chorus": ProgressionFactory.twelve_bar_blues(key_root),
             }
-        elif genre in (Genre.CLASSIC_ROCK, Genre.HARD_ROCK, Genre.PUNK):
+        elif genre in (Genre.DELTA_BLUES, Genre.CHICAGO_BLUES):
+            return {
+                "verse": ProgressionFactory.twelve_bar_blues(key_root),
+                "chorus": ProgressionFactory.blues_jazz(key_root),
+            }
+        elif genre in (Genre.CLASSIC_ROCK, Genre.HARD_ROCK, Genre.PUNK, Genre.SURF_ROCK, Genre.SOUTHERN_ROCK):
             return {
                 "verse": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
                 "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre in (Genre.GARAGE_ROCK, Genre.NOISE):
+            return {
+                "verse": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
+                "chorus": ProgressionFactory.grunge_minor_vamp(key_root),
+            }
+        elif genre == Genre.GRUNGE:
+            return {
+                "verse": ProgressionFactory.grunge_minor_vamp(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre in (Genre.ALT_ROCK, Genre.INDIE_ROCK, Genre.EMO, Genre.POST_PUNK):
+            return {
+                "verse": ProgressionFactory.indie_I_vi_iii_IV(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre == Genre.PROG_ROCK:
+            return {
+                "verse": ProgressionFactory.prog_rock_epic(key_root),
+                "chorus": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
+            }
+        elif genre == Genre.PSYCHEDELIC_ROCK:
+            return {
+                "verse": ProgressionFactory.modal_dorian(key_root),
+                "chorus": ProgressionFactory.prog_rock_epic(key_root),
+            }
+        elif genre in (Genre.POST_ROCK, Genre.SHOEGAZE):
+            return {
+                "verse": ProgressionFactory.post_rock_ambient(key_root),
+                "chorus": ProgressionFactory.indie_I_vi_iii_IV(key_root),
+            }
+        elif genre == Genre.SOFT_ROCK:
+            return {
+                "verse": ProgressionFactory.rock_ballad(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre == Genre.MATH_ROCK:
+            return {
+                "verse": ProgressionFactory.math_rock_odd(key_root),
+                "chorus": ProgressionFactory.prog_rock_epic(key_root),
             }
         elif genre == Genre.POP:
             return {
                 "verse": ProgressionFactory.pop_I_V_vi_IV(key_root),
                 "chorus": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
             }
-        elif genre in (Genre.JAZZ, Genre.SWING, Genre.BEBOP):
+        elif genre in (Genre.SYNTH_POP, Genre.NEW_WAVE):
+            return {
+                "verse": ProgressionFactory.synthwave_i_III_VII_VI(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre in (Genre.INDIE_POP, Genre.DREAM_POP):
+            return {
+                "verse": ProgressionFactory.indie_I_vi_iii_IV(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre == Genre.K_POP:
+            return {
+                "verse": ProgressionFactory.pop_I_V_vi_IV(key_root),
+                "chorus": ProgressionFactory.disco_I_vi_ii_V(key_root),
+            }
+        elif genre == Genre.DISCO:
+            return {
+                "verse": ProgressionFactory.disco_I_vi_ii_V(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre in (Genre.JAZZ, Genre.SWING, Genre.BEBOP, Genre.COOL_JAZZ):
             return {
                 "verse": ProgressionFactory.jazz_ii_V_I(key_root),
                 "chorus": ProgressionFactory.jazz_turnaround(key_root),
             }
-        elif genre in (Genre.FUNK, Genre.RNB, Genre.SOUL):
+        elif genre == Genre.FUSION:
+            return {
+                "verse": ProgressionFactory.modal_dorian(key_root),
+                "chorus": ProgressionFactory.jazz_turnaround(key_root),
+            }
+        elif genre == Genre.SMOOTH_JAZZ:
+            return {
+                "verse": ProgressionFactory.jazz_ii_V_I(key_root),
+                "chorus": ProgressionFactory.bossa_nova(key_root),
+            }
+        elif genre == Genre.FREE_JAZZ:
+            return {
+                "verse": ProgressionFactory.modal_dorian(key_root),
+                "chorus": ProgressionFactory.jazz_ii_V_I(key_root),
+            }
+        elif genre == Genre.ACID_JAZZ:
+            return {
+                "verse": ProgressionFactory.funk_I7_IV7(key_root),
+                "chorus": ProgressionFactory.jazz_turnaround(key_root),
+            }
+        elif genre in (Genre.FUNK, Genre.RNB, Genre.SOUL, Genre.MOTOWN):
             return {
                 "verse": ProgressionFactory.funk_I7_IV7(key_root),
                 "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre == Genre.NEO_SOUL:
+            return {
+                "verse": ProgressionFactory.neo_soul_ii_V_I(key_root),
+                "chorus": ProgressionFactory.jazz_turnaround(key_root),
             }
         elif genre in (Genre.LATIN, Genre.BOSSA_NOVA):
             return {
                 "verse": ProgressionFactory.bossa_nova(key_root),
                 "chorus": ProgressionFactory.jazz_ii_V_I(key_root),
             }
+        elif genre == Genre.SALSA:
+            return {
+                "verse": ProgressionFactory.salsa_montuno(key_root),
+                "chorus": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
+            }
+        elif genre == Genre.SAMBA:
+            return {
+                "verse": ProgressionFactory.bossa_nova(key_root),
+                "chorus": ProgressionFactory.disco_I_vi_ii_V(key_root),
+            }
+        elif genre == Genre.REGGAETON:
+            return {
+                "verse": ProgressionFactory.reggaeton_i_IV_V(key_root),
+                "chorus": ProgressionFactory.trap_minor_vamp(key_root),
+            }
+        elif genre == Genre.CUMBIA:
+            return {
+                "verse": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre == Genre.TANGO:
+            return {
+                "verse": ProgressionFactory.flamenco_phrygian(key_root),
+                "chorus": ProgressionFactory.minor_i_VII_VI_VII(key_root),
+            }
         elif genre == Genre.METAL:
             return {
                 "verse": ProgressionFactory.metal_power_I_VII_VI(key_root),
                 "chorus": ProgressionFactory.minor_i_VII_VI_VII(key_root),
             }
-        elif genre in (Genre.HIP_HOP, Genre.ELECTRONIC, Genre.HOUSE, Genre.AMBIENT):
+        elif genre in (Genre.THRASH_METAL, Genre.DEATH_METAL, Genre.BLACK_METAL, Genre.METALCORE):
+            return {
+                "verse": ProgressionFactory.metal_power_I_VII_VI(key_root),
+                "chorus": ProgressionFactory.grunge_minor_vamp(key_root),
+            }
+        elif genre == Genre.DOOM_METAL:
+            return {
+                "verse": ProgressionFactory.minor_i_VII_VI_VII(key_root),
+                "chorus": ProgressionFactory.metal_power_I_VII_VI(key_root),
+            }
+        elif genre in (Genre.POWER_METAL, Genre.PROGRESSIVE_METAL):
+            return {
+                "verse": ProgressionFactory.metal_power_I_VII_VI(key_root),
+                "chorus": ProgressionFactory.prog_rock_epic(key_root),
+            }
+        elif genre == Genre.NU_METAL:
+            return {
+                "verse": ProgressionFactory.grunge_minor_vamp(key_root),
+                "chorus": ProgressionFactory.metal_power_I_VII_VI(key_root),
+            }
+        elif genre == Genre.INDUSTRIAL:
+            return {
+                "verse": ProgressionFactory.industrial_power_riff(key_root),
+                "chorus": ProgressionFactory.metal_power_I_VII_VI(key_root),
+            }
+        elif genre == Genre.HIP_HOP:
             return {
                 "verse": ProgressionFactory.modal_dorian(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre == Genre.TRAP:
+            return {
+                "verse": ProgressionFactory.trap_minor_vamp(key_root),
+                "chorus": ProgressionFactory.minor_i_VII_VI_VII(key_root),
+            }
+        elif genre in (Genre.LO_FI_HIP_HOP, Genre.CHILLWAVE, Genre.DOWNTEMPO):
+            return {
+                "verse": ProgressionFactory.jazz_ii_V_I(key_root),
+                "chorus": ProgressionFactory.neo_soul_ii_V_I(key_root),
+            }
+        elif genre == Genre.BOOM_BAP:
+            return {
+                "verse": ProgressionFactory.modal_dorian(key_root),
+                "chorus": ProgressionFactory.funk_I7_IV7(key_root),
+            }
+        elif genre in (Genre.ELECTRONIC, Genre.HOUSE, Genre.DEEP_HOUSE, Genre.TECH_HOUSE, Genre.ELECTRO, Genre.GARAGE_ELECTRONIC):
+            return {
+                "verse": ProgressionFactory.modal_dorian(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre == Genre.TECHNO:
+            return {
+                "verse": ProgressionFactory.modal_dorian(key_root),
+                "chorus": ProgressionFactory.synthwave_i_III_VII_VI(key_root),
+            }
+        elif genre == Genre.TRANCE:
+            return {
+                "verse": ProgressionFactory.trance_uplifting(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre == Genre.DRUM_AND_BASS:
+            return {
+                "verse": ProgressionFactory.dnb_minor_tension(key_root),
+                "chorus": ProgressionFactory.minor_i_VII_VI_VII(key_root),
+            }
+        elif genre == Genre.DUBSTEP:
+            return {
+                "verse": ProgressionFactory.dubstep_halftime(key_root),
+                "chorus": ProgressionFactory.trap_minor_vamp(key_root),
+            }
+        elif genre in (Genre.AMBIENT, Genre.IDM, Genre.VAPORWAVE):
+            return {
+                "verse": ProgressionFactory.post_rock_ambient(key_root),
+                "chorus": ProgressionFactory.modal_dorian(key_root),
+            }
+        elif genre == Genre.SYNTHWAVE:
+            return {
+                "verse": ProgressionFactory.synthwave_i_III_VII_VI(key_root),
                 "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
             }
         elif genre == Genre.GOSPEL:
@@ -309,10 +499,95 @@ class SessionOrchestrator:
                 "verse": ProgressionFactory.gospel_I_IV_I_V(key_root),
                 "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
             }
+        elif genre == Genre.WORSHIP:
+            return {
+                "verse": ProgressionFactory.worship_I_IV_vi_V(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
         elif genre == Genre.REGGAE:
             return {
                 "verse": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
                 "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre == Genre.SKA:
+            return {
+                "verse": ProgressionFactory.ska_offbeat(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre == Genre.DUB:
+            return {
+                "verse": ProgressionFactory.modal_dorian(key_root),
+                "chorus": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
+            }
+        elif genre == Genre.DANCEHALL:
+            return {
+                "verse": ProgressionFactory.reggaeton_i_IV_V(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre == Genre.CALYPSO:
+            return {
+                "verse": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
+                "chorus": ProgressionFactory.disco_I_vi_ii_V(key_root),
+            }
+        elif genre == Genre.AFROBEAT:
+            return {
+                "verse": ProgressionFactory.afrobeat_vamp(key_root),
+                "chorus": ProgressionFactory.funk_I7_IV7(key_root),
+            }
+        elif genre == Genre.HIGHLIFE:
+            return {
+                "verse": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
+                "chorus": ProgressionFactory.afrobeat_vamp(key_root),
+            }
+        elif genre == Genre.FLAMENCO:
+            return {
+                "verse": ProgressionFactory.flamenco_phrygian(key_root),
+                "chorus": ProgressionFactory.flamenco_phrygian(key_root),
+            }
+        elif genre == Genre.MIDDLE_EASTERN:
+            return {
+                "verse": ProgressionFactory.middle_eastern_hijaz(key_root),
+                "chorus": ProgressionFactory.flamenco_phrygian(key_root),
+            }
+        elif genre == Genre.BOLLYWOOD:
+            return {
+                "verse": ProgressionFactory.middle_eastern_hijaz(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre in (Genre.CLASSICAL, Genre.ROMANTIC_ERA):
+            return {
+                "verse": ProgressionFactory.classical_I_IV_V_I(key_root),
+                "chorus": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
+            }
+        elif genre == Genre.BAROQUE:
+            return {
+                "verse": ProgressionFactory.baroque_circle_of_fifths(key_root),
+                "chorus": ProgressionFactory.classical_I_IV_V_I(key_root),
+            }
+        elif genre == Genre.CINEMATIC:
+            return {
+                "verse": ProgressionFactory.cinematic_epic(key_root),
+                "chorus": ProgressionFactory.post_rock_ambient(key_root),
+            }
+        elif genre in (Genre.COUNTRY, Genre.AMERICANA):
+            return {
+                "verse": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre == Genre.FOLK:
+            return {
+                "verse": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
+                "chorus": ProgressionFactory.rock_ballad(key_root),
+            }
+        elif genre == Genre.BLUEGRASS:
+            return {
+                "verse": ProgressionFactory.bluegrass_I_IV_V(key_root),
+                "chorus": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
+            }
+        elif genre == Genre.CELTIC:
+            return {
+                "verse": ProgressionFactory.modal_dorian(key_root),
+                "chorus": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
             }
         else:
             return {

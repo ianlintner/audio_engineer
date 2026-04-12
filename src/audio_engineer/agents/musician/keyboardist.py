@@ -118,11 +118,24 @@ class KeyboardistAgent(BaseMusician):
     def _select_program(self, genre: Genre) -> int:
         if self.instrument == Instrument.ORGAN:
             return GM_PROGRAMS.get("drawbar_organ", GM_PROGRAMS["rock_organ"])
-        if self.instrument in (Instrument.VIBRAPHONE,):
+        if self.instrument == Instrument.VIBRAPHONE:
             return GM_PROGRAMS.get("vibraphone", GM_PROGRAMS["acoustic_grand_piano"])
-        if self.instrument in (Instrument.MARIMBA,):
+        if self.instrument == Instrument.MARIMBA:
             return GM_PROGRAMS.get("marimba", GM_PROGRAMS["acoustic_grand_piano"])
-        if genre in (Genre.CLASSIC_ROCK, Genre.HARD_ROCK, Genre.BLUES):
+        if self.instrument == Instrument.HARP:
+            return GM_PROGRAMS["orchestral_harp"]
+        if self.instrument == Instrument.ACCORDION:
+            return GM_PROGRAMS["accordion"]
+        if self.instrument == Instrument.SITAR:
+            return GM_PROGRAMS["sitar"]
+        if self.instrument == Instrument.KOTO:
+            return GM_PROGRAMS["koto"]
+        if self.instrument == Instrument.KALIMBA:
+            return GM_PROGRAMS["kalimba"]
+        if self.instrument == Instrument.ELECTRIC_PIANO:
+            return GM_PROGRAMS["electric_piano_1"]
+        if genre in (Genre.CLASSIC_ROCK, Genre.HARD_ROCK, Genre.BLUES,
+                     Genre.CHICAGO_BLUES, Genre.SOUTHERN_ROCK):
             return GM_PROGRAMS["rock_organ"]
         return GM_PROGRAMS["acoustic_grand_piano"]
 

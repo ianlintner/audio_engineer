@@ -116,13 +116,34 @@ class BrassAgent(BaseMusician):
     def _select_program(self, genre: Genre, instrument: Instrument) -> int:
         if instrument == Instrument.TRUMPET:
             return GM_PROGRAMS["trumpet"]
+        if instrument == Instrument.TROMBONE:
+            return GM_PROGRAMS["trombone"]
+        if instrument == Instrument.FRENCH_HORN:
+            return GM_PROGRAMS["french_horn"]
+        if instrument == Instrument.TUBA:
+            return GM_PROGRAMS["tuba"]
         if instrument == Instrument.SAXOPHONE:
-            if genre in (Genre.JAZZ, Genre.SWING, Genre.BEBOP, Genre.BLUES):
+            if genre in (Genre.JAZZ, Genre.SWING, Genre.BEBOP, Genre.BLUES, Genre.COOL_JAZZ,
+                         Genre.SMOOTH_JAZZ, Genre.FREE_JAZZ, Genre.FUSION, Genre.ACID_JAZZ):
                 return GM_PROGRAMS["tenor_sax"]
             return GM_PROGRAMS["alto_sax"]
-        if genre in (Genre.FUNK, Genre.SOUL, Genre.RNB, Genre.GOSPEL):
+        if instrument == Instrument.WOODWINDS:
+            return GM_PROGRAMS["oboe"]
+        if instrument == Instrument.FLUTE:
+            return GM_PROGRAMS["flute"]
+        if instrument == Instrument.CLARINET:
+            return GM_PROGRAMS["clarinet"]
+        if instrument == Instrument.OBOE:
+            return GM_PROGRAMS["oboe"]
+        if instrument == Instrument.HARMONICA:
+            return GM_PROGRAMS["harmonica"]
+        if instrument == Instrument.BAGPIPE:
+            return GM_PROGRAMS["bagpipe"]
+        if genre in (Genre.FUNK, Genre.SOUL, Genre.RNB, Genre.GOSPEL, Genre.MOTOWN,
+                     Genre.AFROBEAT, Genre.SALSA, Genre.SKA):
             return GM_PROGRAMS["brass_section"]
-        if genre in (Genre.JAZZ, Genre.SWING, Genre.BEBOP):
+        if genre in (Genre.JAZZ, Genre.SWING, Genre.BEBOP, Genre.COOL_JAZZ,
+                     Genre.SMOOTH_JAZZ, Genre.FUSION):
             return GM_PROGRAMS["tenor_sax"]
         return GM_PROGRAMS["brass_section"]
 

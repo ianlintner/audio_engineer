@@ -163,6 +163,7 @@ class SessionOrchestrator:
                 session.tracks[organ_key] = organ_track
 
             if Instrument.STRINGS in enabled_instruments or Instrument.VIOLIN in enabled_instruments:
+                # VIOLIN takes precedence over STRINGS when both are enabled
                 strings_instr = (
                     Instrument.VIOLIN if Instrument.VIOLIN in enabled_instruments
                     else Instrument.STRINGS
@@ -174,6 +175,7 @@ class SessionOrchestrator:
                 session.tracks[strings_instr.value] = strings_track
 
             if Instrument.BRASS in enabled_instruments or Instrument.TRUMPET in enabled_instruments or Instrument.SAXOPHONE in enabled_instruments:
+                # Priority order: TRUMPET > SAXOPHONE > BRASS (one track per session)
                 brass_instrument = Instrument.BRASS
                 if Instrument.TRUMPET in enabled_instruments:
                     brass_instrument = Instrument.TRUMPET

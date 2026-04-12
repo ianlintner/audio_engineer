@@ -36,7 +36,7 @@ from audio_engineer.providers.base import (
 logger = logging.getLogger(__name__)
 
 # Map instrument name → (agent class, Instrument enum value to inject, or None to use agent default)
-_INSTRUMENT_AGENTS: dict[str, tuple[type[BaseMusician], Any]] = {
+_INSTRUMENT_AGENTS: dict[str, tuple[type[BaseMusician], Instrument | None]] = {
     "drums": (DrummerAgent, None),
     "bass": (BassistAgent, None),
     "electric_guitar": (GuitaristAgent, None),

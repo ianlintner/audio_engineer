@@ -10,7 +10,7 @@ from audio_engineer.core.models import (
     Genre, Instrument, SessionConfig, SessionStatus, Session,
     RenderConfig,
 )
-from audio_engineer.core.music_theory import ChordProgression, ProgressionFactory
+from audio_engineer.core.music_theory import ChordProgression, get_genre_progressions
 from audio_engineer.core.midi_engine import MidiEngine
 from audio_engineer.agents.base import SessionContext
 from audio_engineer.agents.musician.drummer import DrummerAgent
@@ -264,61 +264,7 @@ class SessionOrchestrator:
         self, genre: Genre, key_root: str, key_mode: str
     ) -> dict[str, ChordProgression]:
         """Get appropriate chord progressions for a genre."""
-        if genre == Genre.BLUES:
-            return {
-                "verse": ProgressionFactory.twelve_bar_blues(key_root),
-                "chorus": ProgressionFactory.twelve_bar_blues(key_root),
-            }
-        elif genre in (Genre.CLASSIC_ROCK, Genre.HARD_ROCK, Genre.PUNK):
-            return {
-                "verse": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
-                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
-            }
-        elif genre == Genre.POP:
-            return {
-                "verse": ProgressionFactory.pop_I_V_vi_IV(key_root),
-                "chorus": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
-            }
-        elif genre in (Genre.JAZZ, Genre.SWING, Genre.BEBOP):
-            return {
-                "verse": ProgressionFactory.jazz_ii_V_I(key_root),
-                "chorus": ProgressionFactory.jazz_turnaround(key_root),
-            }
-        elif genre in (Genre.FUNK, Genre.RNB, Genre.SOUL):
-            return {
-                "verse": ProgressionFactory.funk_I7_IV7(key_root),
-                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
-            }
-        elif genre in (Genre.LATIN, Genre.BOSSA_NOVA):
-            return {
-                "verse": ProgressionFactory.bossa_nova(key_root),
-                "chorus": ProgressionFactory.jazz_ii_V_I(key_root),
-            }
-        elif genre == Genre.METAL:
-            return {
-                "verse": ProgressionFactory.metal_power_I_VII_VI(key_root),
-                "chorus": ProgressionFactory.minor_i_VII_VI_VII(key_root),
-            }
-        elif genre in (Genre.HIP_HOP, Genre.ELECTRONIC, Genre.HOUSE, Genre.AMBIENT):
-            return {
-                "verse": ProgressionFactory.modal_dorian(key_root),
-                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
-            }
-        elif genre == Genre.GOSPEL:
-            return {
-                "verse": ProgressionFactory.gospel_I_IV_I_V(key_root),
-                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
-            }
-        elif genre == Genre.REGGAE:
-            return {
-                "verse": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
-                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
-            }
-        else:
-            return {
-                "verse": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
-                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
-            }
+        return get_genre_progressions(genre, key_root, key_mode)
 
     def _export(self, session: Session, backend_name: str, render_audio: bool) -> list[Path]:
         """Export session to files."""

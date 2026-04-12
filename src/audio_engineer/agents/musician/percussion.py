@@ -116,5 +116,11 @@ class PercussionAgent(BaseMusician):
             return _BONGO_PATTERNS.get(genre) or next(iter(_BONGO_PATTERNS.values()), _DEFAULT_PATTERN)
         if self.instrument == Instrument.DJEMBE:
             return _DJEMBE_PATTERNS.get(genre) or next(iter(_DJEMBE_PATTERNS.values()), _DEFAULT_PATTERN)
+        if self.instrument == Instrument.TABLA:
+            # Tabla approximated via bongo hi/low patterns pending tabla-specific rhythms
+            return _BONGO_PATTERNS.get(genre) or next(iter(_BONGO_PATTERNS.values()), _DEFAULT_PATTERN)
+        if self.instrument == Instrument.STEEL_DRUMS:
+            # Steel drums use a simple rhythmic pattern
+            return _DEFAULT_PATTERN
         # CONGA or PERCUSSION
         return _CONGA_PATTERNS.get(genre, _DEFAULT_PATTERN)

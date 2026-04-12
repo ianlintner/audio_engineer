@@ -15,7 +15,7 @@ from audio_engineer.core.models import (
     BandConfig,
     BandMemberConfig,
 )
-from audio_engineer.core.music_theory import ChordProgression, ProgressionFactory
+from audio_engineer.core.music_theory import ChordProgression, get_genre_progressions
 from audio_engineer.agents.base import BaseMusician, SessionContext
 from audio_engineer.agents.musician.drummer import DrummerAgent
 from audio_engineer.agents.musician.bassist import BassistAgent
@@ -48,10 +48,20 @@ _INSTRUMENT_AGENTS: dict[str, tuple[type[BaseMusician], Instrument | None]] = {
     "organ": (KeyboardistAgent, Instrument.ORGAN),
     "strings": (StringsAgent, None),
     "violin": (StringsAgent, Instrument.VIOLIN),
+    "cello": (StringsAgent, Instrument.CELLO),
+    "viola": (StringsAgent, Instrument.VIOLA),
+    "contrabass": (StringsAgent, Instrument.CONTRABASS),
+    "harp": (KeyboardistAgent, Instrument.HARP),
     "brass": (BrassAgent, None),
     "trumpet": (BrassAgent, Instrument.TRUMPET),
+    "trombone": (BrassAgent, Instrument.TROMBONE),
+    "french_horn": (BrassAgent, Instrument.FRENCH_HORN),
+    "tuba": (BrassAgent, Instrument.TUBA),
     "saxophone": (BrassAgent, Instrument.SAXOPHONE),
     "woodwinds": (BrassAgent, Instrument.WOODWINDS),
+    "flute": (BrassAgent, Instrument.FLUTE),
+    "clarinet": (BrassAgent, Instrument.CLARINET),
+    "oboe": (BrassAgent, Instrument.OBOE),
     "synthesizer": (SynthAgent, Instrument.SYNTHESIZER),
     "pad": (SynthAgent, Instrument.PAD),
     "vibraphone": (KeyboardistAgent, Instrument.VIBRAPHONE),
@@ -60,10 +70,20 @@ _INSTRUMENT_AGENTS: dict[str, tuple[type[BaseMusician], Instrument | None]] = {
     "conga": (PercussionAgent, Instrument.CONGA),
     "bongo": (PercussionAgent, Instrument.BONGO),
     "djembe": (PercussionAgent, Instrument.DJEMBE),
+    "tabla": (PercussionAgent, Instrument.TABLA),
     "banjo": (GuitaristAgent, None),
     "ukulele": (GuitaristAgent, None),
     "mandolin": (GuitaristAgent, None),
     "sitar": (KeyboardistAgent, Instrument.SITAR),
+    "harmonica": (BrassAgent, Instrument.HARMONICA),
+    "accordion": (KeyboardistAgent, Instrument.ACCORDION),
+    "steel_drums": (KeyboardistAgent, Instrument.STEEL_DRUMS),
+    "erhu": (StringsAgent, Instrument.ERHU),
+    "koto": (KeyboardistAgent, Instrument.KOTO),
+    "kalimba": (KeyboardistAgent, Instrument.KALIMBA),
+    "bagpipe": (BrassAgent, Instrument.BAGPIPE),
+    "fiddle": (StringsAgent, Instrument.FIDDLE),
+    "electric_piano": (KeyboardistAgent, Instrument.ELECTRIC_PIANO),
 }
 
 
@@ -212,63 +232,4 @@ class MidiProvider(AudioProvider):
         key_root: str,
         key_mode: str,
     ) -> dict[str, ChordProgression]:
-        if genre == Genre.BLUES:
-            return {
-                "verse": ProgressionFactory.twelve_bar_blues(key_root),
-                "chorus": ProgressionFactory.twelve_bar_blues(key_root),
-            }
-        elif genre in (Genre.CLASSIC_ROCK, Genre.HARD_ROCK, Genre.PUNK):
-            return {
-                "verse": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
-                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
-            }
-        elif genre == Genre.POP:
-            return {
-                "verse": ProgressionFactory.pop_I_V_vi_IV(key_root),
-                "chorus": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
-            }
-        elif genre in (Genre.JAZZ, Genre.SWING, Genre.BEBOP):
-            return {
-                "verse": ProgressionFactory.jazz_ii_V_I(key_root),
-                "chorus": ProgressionFactory.jazz_turnaround(key_root),
-            }
-        elif genre in (Genre.FUNK, Genre.RNB, Genre.SOUL):
-            return {
-                "verse": ProgressionFactory.funk_I7_IV7(key_root),
-                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
-            }
-        elif genre == Genre.REGGAE:
-            return {
-                "verse": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
-                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
-            }
-        elif genre in (Genre.LATIN, Genre.BOSSA_NOVA):
-            return {
-                "verse": ProgressionFactory.bossa_nova(key_root),
-                "chorus": ProgressionFactory.jazz_ii_V_I(key_root),
-            }
-        elif genre == Genre.METAL:
-            return {
-                "verse": ProgressionFactory.metal_power_I_VII_VI(key_root),
-                "chorus": ProgressionFactory.minor_i_VII_VI_VII(key_root),
-            }
-        elif genre == Genre.HIP_HOP:
-            return {
-                "verse": ProgressionFactory.modal_dorian(key_root),
-                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
-            }
-        elif genre in (Genre.ELECTRONIC, Genre.HOUSE, Genre.AMBIENT):
-            return {
-                "verse": ProgressionFactory.modal_dorian(key_root),
-                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
-            }
-        elif genre == Genre.GOSPEL:
-            return {
-                "verse": ProgressionFactory.gospel_I_IV_I_V(key_root),
-                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
-            }
-        else:
-            return {
-                "verse": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
-                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
-            }
+        return get_genre_progressions(genre, key_root, key_mode)

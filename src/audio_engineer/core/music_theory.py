@@ -357,3 +357,613 @@ class ProgressionFactory:
             (Chord(key_root, "dom7"), 8.0),
             (Chord(IV_root, "dom7"), 8.0),
         ])
+
+    # ------------------------------------------------------------------
+    # Expanded progressions for new genres
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def indie_I_vi_iii_IV(key_root: str) -> ChordProgression:
+        """Indie / dream-pop: I - vi - iii - IV."""
+        return ChordProgression.from_string("I - vi - iii - IV", key_root, "major")
+
+    @staticmethod
+    def grunge_minor_vamp(key_root: str) -> ChordProgression:
+        """Grunge minor power vamp: i - bIII - bVII - IV."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        bIII = NOTE_NAMES[(root_idx + 3) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        IV = NOTE_NAMES[(root_idx + 5) % 12]
+        return ChordProgression([
+            (Chord(key_root, "power"), 4.0),
+            (Chord(bIII, "power"), 4.0),
+            (Chord(bVII, "power"), 4.0),
+            (Chord(IV, "power"), 4.0),
+        ])
+
+    @staticmethod
+    def prog_rock_epic(key_root: str) -> ChordProgression:
+        """Prog-rock: I - III - bVII - IV (mixed-mode colour)."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        III = NOTE_NAMES[(root_idx + 4) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        IV = NOTE_NAMES[(root_idx + 5) % 12]
+        return ChordProgression([
+            (Chord(key_root, "maj7"), 4.0),
+            (Chord(III, "major"), 4.0),
+            (Chord(bVII, "major"), 4.0),
+            (Chord(IV, "major"), 4.0),
+        ])
+
+    @staticmethod
+    def disco_I_vi_ii_V(key_root: str) -> ChordProgression:
+        """Disco / dance: I - vi - ii - V."""
+        scale = Scale(key_root, "major")
+        I_root = NOTE_NAMES[scale.note_at_degree(1, 0) % 12]
+        vi = NOTE_NAMES[scale.note_at_degree(6, 0) % 12]
+        ii = NOTE_NAMES[scale.note_at_degree(2, 0) % 12]
+        V = NOTE_NAMES[scale.note_at_degree(5, 0) % 12]
+        return ChordProgression([
+            (Chord(I_root, "major"), 4.0),
+            (Chord(vi, "minor"), 4.0),
+            (Chord(ii, "minor"), 4.0),
+            (Chord(V, "dom7"), 4.0),
+        ])
+
+    @staticmethod
+    def synthwave_i_III_VII_VI(key_root: str) -> ChordProgression:
+        """Synthwave / retrowave: i - bIII - bVII - bVI."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        bIII = NOTE_NAMES[(root_idx + 3) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        bVI = NOTE_NAMES[(root_idx + 8) % 12]
+        return ChordProgression([
+            (Chord(key_root, "minor"), 4.0),
+            (Chord(bIII, "major"), 4.0),
+            (Chord(bVII, "major"), 4.0),
+            (Chord(bVI, "major"), 4.0),
+        ])
+
+    @staticmethod
+    def trap_minor_vamp(key_root: str) -> ChordProgression:
+        """Trap / dark hip-hop: i - bVI - bIII - bVII."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        bVI = NOTE_NAMES[(root_idx + 8) % 12]
+        bIII = NOTE_NAMES[(root_idx + 3) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        return ChordProgression([
+            (Chord(key_root, "minor"), 4.0),
+            (Chord(bVI, "major"), 4.0),
+            (Chord(bIII, "major"), 4.0),
+            (Chord(bVII, "major"), 4.0),
+        ])
+
+    @staticmethod
+    def trance_uplifting(key_root: str) -> ChordProgression:
+        """Trance / uplifting: vi - IV - I - V."""
+        return ChordProgression.from_string("vi - IV - I - V", key_root, "major")
+
+    @staticmethod
+    def dubstep_halftime(key_root: str) -> ChordProgression:
+        """Dubstep / halftime: i - bVII (two-chord minor vamp)."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        return ChordProgression([
+            (Chord(key_root, "minor"), 8.0),
+            (Chord(bVII, "major"), 8.0),
+        ])
+
+    @staticmethod
+    def dnb_minor_tension(key_root: str) -> ChordProgression:
+        """Drum-and-bass: i - iv - bVI - bVII."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        iv = NOTE_NAMES[(root_idx + 5) % 12]
+        bVI = NOTE_NAMES[(root_idx + 8) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        return ChordProgression([
+            (Chord(key_root, "minor"), 4.0),
+            (Chord(iv, "minor"), 4.0),
+            (Chord(bVI, "major"), 4.0),
+            (Chord(bVII, "major"), 4.0),
+        ])
+
+    @staticmethod
+    def salsa_montuno(key_root: str) -> ChordProgression:
+        """Salsa / son montuno: I - IV - V - I."""
+        return ChordProgression.from_string("I - IV - V - I", key_root, "major")
+
+    @staticmethod
+    def reggaeton_i_IV_V(key_root: str) -> ChordProgression:
+        """Reggaeton: i - iv - V (minor with dominant turnaround)."""
+        scale = Scale(key_root, "minor")
+        root_idx = scale.note_at_degree(1, 0) % 12
+        i = NOTE_NAMES[root_idx]
+        iv = NOTE_NAMES[scale.note_at_degree(4, 0) % 12]
+        V_root = NOTE_NAMES[(root_idx + 7) % 12]
+        return ChordProgression([
+            (Chord(i, "minor"), 4.0),
+            (Chord(iv, "minor"), 4.0),
+            (Chord(V_root, "major"), 4.0),
+            (Chord(i, "minor"), 4.0),
+        ])
+
+    @staticmethod
+    def ska_offbeat(key_root: str) -> ChordProgression:
+        """Ska: I - IV - V - IV (bright, upbeat)."""
+        return ChordProgression.from_string("I - IV - V - IV", key_root, "major")
+
+    @staticmethod
+    def afrobeat_vamp(key_root: str) -> ChordProgression:
+        """Afrobeat: extended i7 - IV7 vamp."""
+        scale = Scale(key_root, "minor")
+        root_idx = scale.note_at_degree(1, 0) % 12
+        root = NOTE_NAMES[root_idx]
+        IV_root = NOTE_NAMES[(root_idx + 5) % 12]
+        return ChordProgression([
+            (Chord(root, "min7"), 8.0),
+            (Chord(IV_root, "dom7"), 4.0),
+            (Chord(root, "min7"), 4.0),
+        ])
+
+    @staticmethod
+    def flamenco_phrygian(key_root: str) -> ChordProgression:
+        """Flamenco Phrygian cadence: iv - bIII - bII - I."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        iv = NOTE_NAMES[(root_idx + 5) % 12]
+        bIII = NOTE_NAMES[(root_idx + 3) % 12]
+        bII = NOTE_NAMES[(root_idx + 1) % 12]
+        return ChordProgression([
+            (Chord(iv, "minor"), 4.0),
+            (Chord(bIII, "major"), 4.0),
+            (Chord(bII, "major"), 4.0),
+            (Chord(key_root, "major"), 4.0),
+        ])
+
+    @staticmethod
+    def middle_eastern_hijaz(key_root: str) -> ChordProgression:
+        """Middle-Eastern Hijaz mode colour: I - bII - I - bVII."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        bII = NOTE_NAMES[(root_idx + 1) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        return ChordProgression([
+            (Chord(key_root, "major"), 4.0),
+            (Chord(bII, "major"), 4.0),
+            (Chord(key_root, "major"), 4.0),
+            (Chord(bVII, "minor"), 4.0),
+        ])
+
+    @staticmethod
+    def classical_I_IV_V_I(key_root: str) -> ChordProgression:
+        """Classical: I - IV - V - I (authentic cadence)."""
+        return ChordProgression.from_string("I - IV - V - I", key_root, "major")
+
+    @staticmethod
+    def baroque_circle_of_fifths(key_root: str) -> ChordProgression:
+        """Baroque circle-of-fifths: I - IV - vii - iii - vi - ii - V - I."""
+        return ChordProgression.from_string(
+            "I - IV - vii - iii - vi - ii - V - I", key_root, "major"
+        )
+
+    @staticmethod
+    def cinematic_epic(key_root: str) -> ChordProgression:
+        """Cinematic / epic: i - bVI - bIII - bVII."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        bVI = NOTE_NAMES[(root_idx + 8) % 12]
+        bIII = NOTE_NAMES[(root_idx + 3) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        return ChordProgression([
+            (Chord(key_root, "minor"), 4.0),
+            (Chord(bVI, "major"), 4.0),
+            (Chord(bIII, "major"), 4.0),
+            (Chord(bVII, "major"), 4.0),
+        ])
+
+    @staticmethod
+    def bluegrass_I_IV_V(key_root: str) -> ChordProgression:
+        """Bluegrass: I - IV - V - I."""
+        return ChordProgression.from_string("I - IV - V - I", key_root, "major")
+
+    @staticmethod
+    def neo_soul_ii_V_I(key_root: str) -> ChordProgression:
+        """Neo-soul: ii min9 - V dom9 - I maj9."""
+        scale = Scale(key_root, "major")
+        ii = NOTE_NAMES[scale.note_at_degree(2, 0) % 12]
+        V = NOTE_NAMES[scale.note_at_degree(5, 0) % 12]
+        I_root = NOTE_NAMES[scale.note_at_degree(1, 0) % 12]
+        return ChordProgression([
+            (Chord(ii, "min9"), 4.0),
+            (Chord(V, "dom9"), 4.0),
+            (Chord(I_root, "maj9"), 8.0),
+        ])
+
+    @staticmethod
+    def worship_I_IV_vi_V(key_root: str) -> ChordProgression:
+        """Worship / praise: I - IV - vi - V."""
+        return ChordProgression.from_string("I - IV - vi - V", key_root, "major")
+
+    @staticmethod
+    def post_rock_ambient(key_root: str) -> ChordProgression:
+        """Post-rock: I - iii - vi - IV (slow, expansive)."""
+        return ChordProgression.from_string("I - iii - vi - IV", key_root, "major")
+
+    @staticmethod
+    def math_rock_odd(key_root: str) -> ChordProgression:
+        """Math-rock: I - III - vi - ii (non-obvious voicings)."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        III = NOTE_NAMES[(root_idx + 4) % 12]
+        vi = NOTE_NAMES[(root_idx + 9) % 12]
+        ii = NOTE_NAMES[(root_idx + 2) % 12]
+        return ChordProgression([
+            (Chord(key_root, "major"), 3.5),
+            (Chord(III, "major"), 3.5),
+            (Chord(vi, "minor"), 3.5),
+            (Chord(ii, "minor"), 3.5),
+        ])
+
+    @staticmethod
+    def emo_vi_IV_I_V(key_root: str) -> ChordProgression:
+        """Emo: vi - IV - I - V."""
+        return ChordProgression.from_string("vi - IV - I - V", key_root, "major")
+
+    @staticmethod
+    def industrial_power_riff(key_root: str) -> ChordProgression:
+        """Industrial / EBM: i5 - bII5 - i5 - bVII5."""
+        root_idx = NOTE_NAMES.index(key_root.strip().upper()) if key_root.strip().upper() in NOTE_NAMES else 0
+        bII = NOTE_NAMES[(root_idx + 1) % 12]
+        bVII = NOTE_NAMES[(root_idx + 10) % 12]
+        return ChordProgression([
+            (Chord(key_root, "power"), 4.0),
+            (Chord(bII, "power"), 4.0),
+            (Chord(key_root, "power"), 4.0),
+            (Chord(bVII, "power"), 4.0),
+        ])
+
+
+# ---------------------------------------------------------------------------
+# Centralised genre → chord-progression routing
+# ---------------------------------------------------------------------------
+
+def get_genre_progressions(
+    genre: "Genre",  # noqa: F821 — forward reference resolved at runtime
+    key_root: str,
+    key_mode: str,
+) -> dict[str, ChordProgression]:
+    """Return ``{"verse": …, "chorus": …}`` progressions for *genre*.
+
+    This is the single source of truth used by both the session
+    orchestrator and the MIDI provider so the mapping stays consistent.
+    """
+    from .models import Genre  # deferred to avoid circular import
+
+    PF = ProgressionFactory
+
+    if genre == Genre.BLUES:
+        return {
+            "verse": PF.twelve_bar_blues(key_root),
+            "chorus": PF.twelve_bar_blues(key_root),
+        }
+    elif genre in (Genre.DELTA_BLUES, Genre.CHICAGO_BLUES):
+        return {
+            "verse": PF.twelve_bar_blues(key_root),
+            "chorus": PF.blues_jazz(key_root),
+        }
+    elif genre in (Genre.CLASSIC_ROCK, Genre.HARD_ROCK, Genre.PUNK, Genre.SURF_ROCK, Genre.SOUTHERN_ROCK):
+        return {
+            "verse": PF.classic_rock_I_IV_V(key_root, key_mode),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre in (Genre.GARAGE_ROCK, Genre.NOISE):
+        return {
+            "verse": PF.classic_rock_I_IV_V(key_root, key_mode),
+            "chorus": PF.grunge_minor_vamp(key_root),
+        }
+    elif genre == Genre.GRUNGE:
+        return {
+            "verse": PF.grunge_minor_vamp(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre in (Genre.ALT_ROCK, Genre.INDIE_ROCK, Genre.EMO, Genre.POST_PUNK):
+        return {
+            "verse": PF.indie_I_vi_iii_IV(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre == Genre.PROG_ROCK:
+        return {
+            "verse": PF.prog_rock_epic(key_root),
+            "chorus": PF.classic_rock_I_IV_V(key_root, key_mode),
+        }
+    elif genre == Genre.PSYCHEDELIC_ROCK:
+        return {
+            "verse": PF.modal_dorian(key_root),
+            "chorus": PF.prog_rock_epic(key_root),
+        }
+    elif genre in (Genre.POST_ROCK, Genre.SHOEGAZE):
+        return {
+            "verse": PF.post_rock_ambient(key_root),
+            "chorus": PF.indie_I_vi_iii_IV(key_root),
+        }
+    elif genre == Genre.SOFT_ROCK:
+        return {
+            "verse": PF.rock_ballad(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre == Genre.MATH_ROCK:
+        return {
+            "verse": PF.math_rock_odd(key_root),
+            "chorus": PF.prog_rock_epic(key_root),
+        }
+    elif genre == Genre.POP:
+        return {
+            "verse": PF.pop_I_V_vi_IV(key_root),
+            "chorus": PF.classic_rock_I_IV_V(key_root, key_mode),
+        }
+    elif genre in (Genre.SYNTH_POP, Genre.NEW_WAVE):
+        return {
+            "verse": PF.synthwave_i_III_VII_VI(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre in (Genre.INDIE_POP, Genre.DREAM_POP):
+        return {
+            "verse": PF.indie_I_vi_iii_IV(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre == Genre.K_POP:
+        return {
+            "verse": PF.pop_I_V_vi_IV(key_root),
+            "chorus": PF.disco_I_vi_ii_V(key_root),
+        }
+    elif genre == Genre.DISCO:
+        return {
+            "verse": PF.disco_I_vi_ii_V(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre in (Genre.JAZZ, Genre.SWING, Genre.BEBOP, Genre.COOL_JAZZ):
+        return {
+            "verse": PF.jazz_ii_V_I(key_root),
+            "chorus": PF.jazz_turnaround(key_root),
+        }
+    elif genre == Genre.FUSION:
+        return {
+            "verse": PF.modal_dorian(key_root),
+            "chorus": PF.jazz_turnaround(key_root),
+        }
+    elif genre == Genre.SMOOTH_JAZZ:
+        return {
+            "verse": PF.jazz_ii_V_I(key_root),
+            "chorus": PF.bossa_nova(key_root),
+        }
+    elif genre == Genre.FREE_JAZZ:
+        return {
+            "verse": PF.modal_dorian(key_root),
+            "chorus": PF.jazz_ii_V_I(key_root),
+        }
+    elif genre == Genre.ACID_JAZZ:
+        return {
+            "verse": PF.funk_I7_IV7(key_root),
+            "chorus": PF.jazz_turnaround(key_root),
+        }
+    elif genre in (Genre.FUNK, Genre.RNB, Genre.SOUL, Genre.MOTOWN):
+        return {
+            "verse": PF.funk_I7_IV7(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre == Genre.NEO_SOUL:
+        return {
+            "verse": PF.neo_soul_ii_V_I(key_root),
+            "chorus": PF.jazz_turnaround(key_root),
+        }
+    elif genre in (Genre.LATIN, Genre.BOSSA_NOVA):
+        return {
+            "verse": PF.bossa_nova(key_root),
+            "chorus": PF.jazz_ii_V_I(key_root),
+        }
+    elif genre == Genre.SALSA:
+        return {
+            "verse": PF.salsa_montuno(key_root),
+            "chorus": PF.classic_rock_I_IV_V(key_root, key_mode),
+        }
+    elif genre == Genre.SAMBA:
+        return {
+            "verse": PF.bossa_nova(key_root),
+            "chorus": PF.disco_I_vi_ii_V(key_root),
+        }
+    elif genre == Genre.REGGAETON:
+        return {
+            "verse": PF.reggaeton_i_IV_V(key_root),
+            "chorus": PF.trap_minor_vamp(key_root),
+        }
+    elif genre == Genre.CUMBIA:
+        return {
+            "verse": PF.classic_rock_I_IV_V(key_root, key_mode),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre == Genre.TANGO:
+        return {
+            "verse": PF.flamenco_phrygian(key_root),
+            "chorus": PF.minor_i_VII_VI_VII(key_root),
+        }
+    elif genre == Genre.METAL:
+        return {
+            "verse": PF.metal_power_I_VII_VI(key_root),
+            "chorus": PF.minor_i_VII_VI_VII(key_root),
+        }
+    elif genre in (Genre.THRASH_METAL, Genre.DEATH_METAL, Genre.BLACK_METAL, Genre.METALCORE):
+        return {
+            "verse": PF.metal_power_I_VII_VI(key_root),
+            "chorus": PF.grunge_minor_vamp(key_root),
+        }
+    elif genre == Genre.DOOM_METAL:
+        return {
+            "verse": PF.minor_i_VII_VI_VII(key_root),
+            "chorus": PF.metal_power_I_VII_VI(key_root),
+        }
+    elif genre in (Genre.POWER_METAL, Genre.PROGRESSIVE_METAL):
+        return {
+            "verse": PF.metal_power_I_VII_VI(key_root),
+            "chorus": PF.prog_rock_epic(key_root),
+        }
+    elif genre == Genre.NU_METAL:
+        return {
+            "verse": PF.grunge_minor_vamp(key_root),
+            "chorus": PF.metal_power_I_VII_VI(key_root),
+        }
+    elif genre == Genre.INDUSTRIAL:
+        return {
+            "verse": PF.industrial_power_riff(key_root),
+            "chorus": PF.metal_power_I_VII_VI(key_root),
+        }
+    elif genre == Genre.HIP_HOP:
+        return {
+            "verse": PF.modal_dorian(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre == Genre.TRAP:
+        return {
+            "verse": PF.trap_minor_vamp(key_root),
+            "chorus": PF.minor_i_VII_VI_VII(key_root),
+        }
+    elif genre in (Genre.LO_FI_HIP_HOP, Genre.CHILLWAVE, Genre.DOWNTEMPO):
+        return {
+            "verse": PF.jazz_ii_V_I(key_root),
+            "chorus": PF.neo_soul_ii_V_I(key_root),
+        }
+    elif genre == Genre.BOOM_BAP:
+        return {
+            "verse": PF.modal_dorian(key_root),
+            "chorus": PF.funk_I7_IV7(key_root),
+        }
+    elif genre in (Genre.ELECTRONIC, Genre.HOUSE, Genre.DEEP_HOUSE, Genre.TECH_HOUSE, Genre.ELECTRO, Genre.GARAGE_ELECTRONIC):
+        return {
+            "verse": PF.modal_dorian(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre == Genre.TECHNO:
+        return {
+            "verse": PF.modal_dorian(key_root),
+            "chorus": PF.synthwave_i_III_VII_VI(key_root),
+        }
+    elif genre == Genre.TRANCE:
+        return {
+            "verse": PF.trance_uplifting(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre == Genre.DRUM_AND_BASS:
+        return {
+            "verse": PF.dnb_minor_tension(key_root),
+            "chorus": PF.minor_i_VII_VI_VII(key_root),
+        }
+    elif genre == Genre.DUBSTEP:
+        return {
+            "verse": PF.dubstep_halftime(key_root),
+            "chorus": PF.trap_minor_vamp(key_root),
+        }
+    elif genre in (Genre.AMBIENT, Genre.IDM, Genre.VAPORWAVE):
+        return {
+            "verse": PF.post_rock_ambient(key_root),
+            "chorus": PF.modal_dorian(key_root),
+        }
+    elif genre == Genre.SYNTHWAVE:
+        return {
+            "verse": PF.synthwave_i_III_VII_VI(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre == Genre.GOSPEL:
+        return {
+            "verse": PF.gospel_I_IV_I_V(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre == Genre.WORSHIP:
+        return {
+            "verse": PF.worship_I_IV_vi_V(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre == Genre.REGGAE:
+        return {
+            "verse": PF.classic_rock_I_IV_V(key_root, key_mode),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre == Genre.SKA:
+        return {
+            "verse": PF.ska_offbeat(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre == Genre.DUB:
+        return {
+            "verse": PF.modal_dorian(key_root),
+            "chorus": PF.classic_rock_I_IV_V(key_root, key_mode),
+        }
+    elif genre == Genre.DANCEHALL:
+        return {
+            "verse": PF.reggaeton_i_IV_V(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre == Genre.CALYPSO:
+        return {
+            "verse": PF.classic_rock_I_IV_V(key_root, key_mode),
+            "chorus": PF.disco_I_vi_ii_V(key_root),
+        }
+    elif genre == Genre.AFROBEAT:
+        return {
+            "verse": PF.afrobeat_vamp(key_root),
+            "chorus": PF.funk_I7_IV7(key_root),
+        }
+    elif genre == Genre.HIGHLIFE:
+        return {
+            "verse": PF.classic_rock_I_IV_V(key_root, key_mode),
+            "chorus": PF.afrobeat_vamp(key_root),
+        }
+    elif genre == Genre.FLAMENCO:
+        return {
+            "verse": PF.flamenco_phrygian(key_root),
+            "chorus": PF.flamenco_phrygian(key_root),
+        }
+    elif genre == Genre.MIDDLE_EASTERN:
+        return {
+            "verse": PF.middle_eastern_hijaz(key_root),
+            "chorus": PF.flamenco_phrygian(key_root),
+        }
+    elif genre == Genre.BOLLYWOOD:
+        return {
+            "verse": PF.middle_eastern_hijaz(key_root),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre in (Genre.CLASSICAL, Genre.ROMANTIC_ERA):
+        return {
+            "verse": PF.classical_I_IV_V_I(key_root),
+            "chorus": PF.classic_rock_I_IV_V(key_root, key_mode),
+        }
+    elif genre == Genre.BAROQUE:
+        return {
+            "verse": PF.baroque_circle_of_fifths(key_root),
+            "chorus": PF.classical_I_IV_V_I(key_root),
+        }
+    elif genre == Genre.CINEMATIC:
+        return {
+            "verse": PF.cinematic_epic(key_root),
+            "chorus": PF.post_rock_ambient(key_root),
+        }
+    elif genre in (Genre.COUNTRY, Genre.AMERICANA):
+        return {
+            "verse": PF.classic_rock_I_IV_V(key_root, key_mode),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }
+    elif genre == Genre.FOLK:
+        return {
+            "verse": PF.classic_rock_I_IV_V(key_root, key_mode),
+            "chorus": PF.rock_ballad(key_root),
+        }
+    elif genre == Genre.BLUEGRASS:
+        return {
+            "verse": PF.bluegrass_I_IV_V(key_root),
+            "chorus": PF.classic_rock_I_IV_V(key_root, key_mode),
+        }
+    elif genre == Genre.CELTIC:
+        return {
+            "verse": PF.modal_dorian(key_root),
+            "chorus": PF.classic_rock_I_IV_V(key_root, key_mode),
+        }
+    else:
+        return {
+            "verse": PF.classic_rock_I_IV_V(key_root, key_mode),
+            "chorus": PF.pop_I_V_vi_IV(key_root),
+        }

@@ -156,28 +156,45 @@ class SessionOrchestrator:
 
             if Instrument.ORGAN in enabled_instruments:
                 logger.info("Generating organ track...")
-                organ_track = self.keyboardist.generate_part(context)
-                context.existing_tracks[Instrument.ORGAN.value] = organ_track
-                session.tracks["organ"] = organ_track
+                organ_agent = KeyboardistAgent(llm=self.llm, instrument=Instrument.ORGAN)
+                organ_track = organ_agent.generate_part(context)
+                organ_key = organ_track.instrument.value
+                context.existing_tracks[organ_key] = organ_track
+                session.tracks[organ_key] = organ_track
 
             if Instrument.STRINGS in enabled_instruments or Instrument.VIOLIN in enabled_instruments:
-                logger.info("Generating strings track...")
-                strings_track = self.strings_agent.generate_part(context)
-                context.existing_tracks[Instrument.STRINGS.value] = strings_track
-                session.tracks["strings"] = strings_track
+                strings_instr = (
+                    Instrument.VIOLIN if Instrument.VIOLIN in enabled_instruments
+                    else Instrument.STRINGS
+                )
+                logger.info("Generating %s track...", strings_instr.value)
+                strings_agent = StringsAgent(llm=self.llm, instrument=strings_instr)
+                strings_track = strings_agent.generate_part(context)
+                context.existing_tracks[strings_instr.value] = strings_track
+                session.tracks[strings_instr.value] = strings_track
 
             if Instrument.BRASS in enabled_instruments or Instrument.TRUMPET in enabled_instruments or Instrument.SAXOPHONE in enabled_instruments:
-                logger.info("Generating brass track...")
-                brass_track = self.brass_agent.generate_part(context)
-                context.existing_tracks[Instrument.BRASS.value] = brass_track
-                session.tracks["brass"] = brass_track
+                brass_instrument = Instrument.BRASS
+                if Instrument.TRUMPET in enabled_instruments:
+                    brass_instrument = Instrument.TRUMPET
+                elif Instrument.SAXOPHONE in enabled_instruments:
+                    brass_instrument = Instrument.SAXOPHONE
+                logger.info("Generating %s track...", brass_instrument.value)
+                brass_agent = BrassAgent(llm=self.llm, instrument=brass_instrument)
+                brass_track = brass_agent.generate_part(context)
+                context.existing_tracks[brass_instrument.value] = brass_track
+                session.tracks[brass_instrument.value] = brass_track
 
             if Instrument.SYNTHESIZER in enabled_instruments or Instrument.PAD in enabled_instruments:
-                logger.info("Generating synth track...")
-                synth_track = self.synth_agent.generate_part(context)
-                instr_key = Instrument.SYNTHESIZER.value if Instrument.SYNTHESIZER in enabled_instruments else Instrument.PAD.value
-                context.existing_tracks[instr_key] = synth_track
-                session.tracks["synth"] = synth_track
+                synth_instr = (
+                    Instrument.SYNTHESIZER if Instrument.SYNTHESIZER in enabled_instruments
+                    else Instrument.PAD
+                )
+                logger.info("Generating %s track...", synth_instr.value)
+                synth_agent = SynthAgent(llm=self.llm, instrument=synth_instr)
+                synth_track = synth_agent.generate_part(context)
+                context.existing_tracks[synth_instr.value] = synth_track
+                session.tracks[synth_instr.value] = synth_track
 
             if Instrument.PERCUSSION in enabled_instruments or Instrument.CONGA in enabled_instruments or Instrument.BONGO in enabled_instruments or Instrument.DJEMBE in enabled_instruments:
                 logger.info("Generating percussion track...")
@@ -187,8 +204,9 @@ class SessionOrchestrator:
                 )
                 perc_agent = PercussionAgent(llm=self.llm, instrument=perc_instr)
                 perc_track = perc_agent.generate_part(context)
-                context.existing_tracks[Instrument.PERCUSSION.value] = perc_track
-                session.tracks["percussion"] = perc_track
+                perc_key = perc_track.instrument.value
+                context.existing_tracks[perc_key] = perc_track
+                session.tracks[perc_key] = perc_track
 
             # 3. Mixing phase
             session.status = SessionStatus.MIXING

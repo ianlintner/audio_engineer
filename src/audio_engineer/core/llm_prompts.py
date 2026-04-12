@@ -3,10 +3,13 @@ from __future__ import annotations
 
 import json
 import re
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from audio_engineer.providers.base import TrackRequest
+if TYPE_CHECKING:
+    from audio_engineer.providers.base import TrackRequest
+
 from audio_engineer.core.constants import TICKS_PER_BEAT
+from audio_engineer.core.models import NoteEvent
 
 _MIDI_JSON_SCHEMA = """[
   {
@@ -97,8 +100,9 @@ def validate_midi_events(
 ) -> list[dict[str, Any]]:
     """Validate and sanitise raw event dicts from LLM output.
 
-    Removes events that are out-of-range or structurally invalid.
-    Clamps numeric fields to safe MIDI ranges.
+    Numeric fields are clamped to safe MIDI ranges. Events that are
+    structurally invalid (wrong type, missing keys) or whose beat
+    positions fall outside the bar are dropped.
     Returns the cleaned list (may be empty).
     """
     valid: list[dict[str, Any]] = []
@@ -118,14 +122,15 @@ def validate_midi_events(
         except (TypeError, ValueError):
             continue
 
-        if not (0 <= pitch <= 127):
-            continue
-        if not (1 <= velocity <= 127):
-            continue
+        # Reject events with unparseable beat positions
         if not (1.0 <= start_beat < beats_per_bar + 1):
             continue
         if not (0.0 < duration_beats <= beats_per_bar):
             continue
+
+        # Clamp pitch and velocity to valid MIDI ranges
+        pitch = max(0, min(127, pitch))
+        velocity = max(1, min(127, velocity))
 
         valid.append({
             "pitch": pitch,
@@ -143,10 +148,8 @@ def events_to_note_events(
     channel: int = 0,
     ticks_per_beat: int = TICKS_PER_BEAT,
     bar_offset_ticks: int = 0,
-) -> list[Any]:
+) -> list[NoteEvent]:
     """Convert validated event dicts to NoteEvent objects."""
-    from audio_engineer.core.models import NoteEvent
-
     result: list[NoteEvent] = []
     for ev in events:
         start_tick = bar_offset_ticks + int((ev["start_beat"] - 1.0) * ticks_per_beat)

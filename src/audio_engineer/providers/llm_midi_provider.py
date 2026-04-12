@@ -117,14 +117,22 @@ class LLMMidiProvider(AudioProvider):
         # Build sections from the session structure
         all_events = []
         bar_offset = 0
+        ticks_per_bar = beats_per_bar * TICKS_PER_BEAT
         for section in config.structure:
             for _ in range(section.repeats):
                 prompt = build_midi_prompt(request, beats_per_bar)
-                bar_events = self._generate_bar(prompt, channel, beats_per_bar, bar_offset)
-                if bar_events is None:
+                # Generate one template bar at offset 0, then shift per-bar copy
+                template_events = self._generate_bar(prompt, channel, beats_per_bar, 0)
+                if template_events is None:
                     # LLM failed — fall back for this section
                     return self._fallback_result(request)
-                all_events.extend(bar_events * section.bars)  # repeat pattern per bar
+                # Repeat the pattern for each bar in the section at the correct tick offset
+                for bar_idx in range(section.bars):
+                    offset_ticks = (bar_offset + bar_idx) * ticks_per_bar
+                    for ev in template_events:
+                        all_events.append(
+                            ev.model_copy(update={"start_tick": ev.start_tick + offset_ticks})
+                        )
                 bar_offset += section.bars
 
         if not all_events:

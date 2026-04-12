@@ -86,17 +86,23 @@ class TestValidateMidiEvents:
         result = validate_midi_events(events)
         assert len(result) == 1
 
-    def test_out_of_range_pitch_rejected(self):
+    def test_out_of_range_pitch_clamped(self):
         events = [self._note(pitch=200)]
-        assert validate_midi_events(events) == []
+        result = validate_midi_events(events)
+        assert len(result) == 1
+        assert result[0]["pitch"] == 127
 
-    def test_negative_pitch_rejected(self):
+    def test_negative_pitch_clamped(self):
         events = [self._note(pitch=-1)]
-        assert validate_midi_events(events) == []
+        result = validate_midi_events(events)
+        assert len(result) == 1
+        assert result[0]["pitch"] == 0
 
-    def test_zero_velocity_rejected(self):
+    def test_zero_velocity_clamped(self):
         events = [self._note(velocity=0)]
-        assert validate_midi_events(events) == []
+        result = validate_midi_events(events)
+        assert len(result) == 1
+        assert result[0]["velocity"] == 1
 
     def test_start_beat_before_1_rejected(self):
         events = [self._note(start=0.5)]

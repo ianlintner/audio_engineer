@@ -122,8 +122,6 @@ class StringsAgent(BaseMusician):
     def _select_program(self, genre: Genre, instrument: Instrument) -> int:
         if instrument == Instrument.VIOLIN:
             return GM_PROGRAMS["violin"]
-        if genre in (Genre.CLASSICAL if hasattr(Genre, "CLASSICAL") else (), Genre.AMBIENT):
-            return GM_PROGRAMS["string_ensemble_1"]
         if genre in (Genre.ELECTRONIC, Genre.AMBIENT):
             return GM_PROGRAMS["synth_strings_1"]
         return GM_PROGRAMS["string_ensemble_1"]

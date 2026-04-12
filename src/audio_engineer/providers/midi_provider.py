@@ -35,35 +35,35 @@ from audio_engineer.providers.base import (
 
 logger = logging.getLogger(__name__)
 
-# Map instrument name strings to agent constructors
-_INSTRUMENT_AGENTS: dict[str, type[BaseMusician]] = {
-    "drums": DrummerAgent,
-    "bass": BassistAgent,
-    "electric_guitar": GuitaristAgent,
+# Map instrument name → (agent class, Instrument enum value to inject, or None to use agent default)
+_INSTRUMENT_AGENTS: dict[str, tuple[type[BaseMusician], Any]] = {
+    "drums": (DrummerAgent, None),
+    "bass": (BassistAgent, None),
+    "electric_guitar": (GuitaristAgent, None),
     # NOTE: GuitaristAgent currently hardcodes Instrument.ELECTRIC_GUITAR;
     # acoustic guitar timbres are not yet differentiated at the MIDI level.
-    "acoustic_guitar": GuitaristAgent,
-    "lead_guitar": LeadGuitarAgent,
-    "keys": KeyboardistAgent,
-    "organ": KeyboardistAgent,
-    "strings": StringsAgent,
-    "violin": StringsAgent,
-    "brass": BrassAgent,
-    "trumpet": BrassAgent,
-    "saxophone": BrassAgent,
-    "woodwinds": BrassAgent,
-    "synthesizer": SynthAgent,
-    "pad": SynthAgent,
-    "vibraphone": KeyboardistAgent,
-    "marimba": KeyboardistAgent,
-    "percussion": PercussionAgent,
-    "conga": PercussionAgent,
-    "bongo": PercussionAgent,
-    "djembe": PercussionAgent,
-    "banjo": GuitaristAgent,
-    "ukulele": GuitaristAgent,
-    "mandolin": GuitaristAgent,
-    "sitar": KeyboardistAgent,
+    "acoustic_guitar": (GuitaristAgent, None),
+    "lead_guitar": (LeadGuitarAgent, None),
+    "keys": (KeyboardistAgent, None),
+    "organ": (KeyboardistAgent, Instrument.ORGAN),
+    "strings": (StringsAgent, None),
+    "violin": (StringsAgent, Instrument.VIOLIN),
+    "brass": (BrassAgent, None),
+    "trumpet": (BrassAgent, Instrument.TRUMPET),
+    "saxophone": (BrassAgent, Instrument.SAXOPHONE),
+    "woodwinds": (BrassAgent, Instrument.WOODWINDS),
+    "synthesizer": (SynthAgent, Instrument.SYNTHESIZER),
+    "pad": (SynthAgent, Instrument.PAD),
+    "vibraphone": (KeyboardistAgent, Instrument.VIBRAPHONE),
+    "marimba": (KeyboardistAgent, Instrument.MARIMBA),
+    "percussion": (PercussionAgent, None),
+    "conga": (PercussionAgent, Instrument.CONGA),
+    "bongo": (PercussionAgent, Instrument.BONGO),
+    "djembe": (PercussionAgent, Instrument.DJEMBE),
+    "banjo": (GuitaristAgent, None),
+    "ukulele": (GuitaristAgent, None),
+    "mandolin": (GuitaristAgent, None),
+    "sitar": (KeyboardistAgent, Instrument.SITAR),
 }
 
 
@@ -105,8 +105,11 @@ class MidiProvider(AudioProvider):
             )
 
         try:
-            agent_cls = _INSTRUMENT_AGENTS[instrument]
-            agent = agent_cls(llm=self._llm)
+            agent_cls, instr_override = _INSTRUMENT_AGENTS[instrument]
+            if instr_override is not None:
+                agent = agent_cls(llm=self._llm, instrument=instr_override)
+            else:
+                agent = agent_cls(llm=self._llm)
             context = self._build_context(request)
             midi_data = agent.generate_part(context)
 

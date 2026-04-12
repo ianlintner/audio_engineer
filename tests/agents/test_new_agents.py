@@ -183,7 +183,13 @@ class TestLeadGuitarAgent:
         agent = LeadGuitarAgent()
         ctx = _make_context(Genre.BLUES)
         track = agent.generate_part(ctx)
-        assert len(track.events) >= 0  # may lay out in low-intensity sections
+        from audio_engineer.core.models import MidiTrackData
+        assert isinstance(track, MidiTrackData)
+        assert track.instrument == Instrument.LEAD_GUITAR
+        # Any events produced must have valid MIDI pitch and velocity
+        for ev in track.events:
+            assert 0 <= ev.pitch <= 127, f"Pitch {ev.pitch} out of MIDI range"
+            assert 1 <= ev.velocity <= 127, f"Velocity {ev.velocity} out of MIDI range"
 
     def test_high_intensity_produces_lick(self):
         config = SessionConfig(

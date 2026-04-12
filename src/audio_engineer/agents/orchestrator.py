@@ -17,10 +17,15 @@ from audio_engineer.agents.musician.drummer import DrummerAgent
 from audio_engineer.agents.musician.bassist import BassistAgent
 from audio_engineer.agents.musician.guitarist import GuitaristAgent
 from audio_engineer.agents.musician.keyboardist import KeyboardistAgent
+from audio_engineer.agents.musician.strings import StringsAgent
+from audio_engineer.agents.musician.brass import BrassAgent
+from audio_engineer.agents.musician.synth import SynthAgent
+from audio_engineer.agents.musician.percussion import PercussionAgent
+from audio_engineer.agents.musician.lead_guitar import LeadGuitarAgent
 from audio_engineer.agents.engineer.mixer import MixerAgent
 from audio_engineer.agents.engineer.mastering import MasteringAgent
 from audio_engineer.daw import get_backend
-from audio_engineer.providers import ProviderRegistry, MidiProvider, GeminiLyriaProvider
+from audio_engineer.providers import ProviderRegistry, MidiProvider, GeminiLyriaProvider, LLMMidiProvider
 
 logger = logging.getLogger(__name__)
 
@@ -48,11 +53,19 @@ class SessionOrchestrator:
         self.bassist = BassistAgent(llm=llm)
         self.guitarist = GuitaristAgent(llm=llm)
         self.keyboardist = KeyboardistAgent(llm=llm)
+        self.strings_agent = StringsAgent(llm=llm)
+        self.brass_agent = BrassAgent(llm=llm)
+        self.synth_agent = SynthAgent(llm=llm)
+        self.lead_guitar_agent = LeadGuitarAgent(llm=llm)
+        self.percussion_agent = PercussionAgent(llm=llm)
         self.mixer = MixerAgent(llm=llm)
         self.mastering = MasteringAgent(llm=llm)
 
         # Provider registry
         self.provider_registry = ProviderRegistry()
+        # LLMMidiProvider takes priority when LLM is configured
+        if llm is not None:
+            self.provider_registry.register(LLMMidiProvider(llm=llm))
         self.provider_registry.register(MidiProvider(llm=llm))
         self.provider_registry.register(GeminiLyriaProvider())
 
@@ -129,11 +142,73 @@ class SessionOrchestrator:
                 context.existing_tracks[instr_key] = guitar_track
                 session.tracks["guitar"] = guitar_track
 
+            if Instrument.LEAD_GUITAR in enabled_instruments:
+                logger.info("Generating lead guitar track...")
+                lead_track = self.lead_guitar_agent.generate_part(context)
+                context.existing_tracks[Instrument.LEAD_GUITAR.value] = lead_track
+                session.tracks["lead_guitar"] = lead_track
+
             if Instrument.KEYS in enabled_instruments:
                 logger.info("Generating keyboard track...")
                 keys_track = self.keyboardist.generate_part(context)
                 context.existing_tracks[Instrument.KEYS.value] = keys_track
                 session.tracks["keys"] = keys_track
+
+            if Instrument.ORGAN in enabled_instruments:
+                logger.info("Generating organ track...")
+                organ_agent = KeyboardistAgent(llm=self.llm, instrument=Instrument.ORGAN)
+                organ_track = organ_agent.generate_part(context)
+                organ_key = organ_track.instrument.value
+                context.existing_tracks[organ_key] = organ_track
+                session.tracks[organ_key] = organ_track
+
+            if Instrument.STRINGS in enabled_instruments or Instrument.VIOLIN in enabled_instruments:
+                # VIOLIN takes precedence over STRINGS when both are enabled
+                strings_instr = (
+                    Instrument.VIOLIN if Instrument.VIOLIN in enabled_instruments
+                    else Instrument.STRINGS
+                )
+                logger.info("Generating %s track...", strings_instr.value)
+                strings_agent = StringsAgent(llm=self.llm, instrument=strings_instr)
+                strings_track = strings_agent.generate_part(context)
+                context.existing_tracks[strings_instr.value] = strings_track
+                session.tracks[strings_instr.value] = strings_track
+
+            if Instrument.BRASS in enabled_instruments or Instrument.TRUMPET in enabled_instruments or Instrument.SAXOPHONE in enabled_instruments:
+                # Priority order: TRUMPET > SAXOPHONE > BRASS (one track per session)
+                brass_instrument = Instrument.BRASS
+                if Instrument.TRUMPET in enabled_instruments:
+                    brass_instrument = Instrument.TRUMPET
+                elif Instrument.SAXOPHONE in enabled_instruments:
+                    brass_instrument = Instrument.SAXOPHONE
+                logger.info("Generating %s track...", brass_instrument.value)
+                brass_agent = BrassAgent(llm=self.llm, instrument=brass_instrument)
+                brass_track = brass_agent.generate_part(context)
+                context.existing_tracks[brass_instrument.value] = brass_track
+                session.tracks[brass_instrument.value] = brass_track
+
+            if Instrument.SYNTHESIZER in enabled_instruments or Instrument.PAD in enabled_instruments:
+                synth_instr = (
+                    Instrument.SYNTHESIZER if Instrument.SYNTHESIZER in enabled_instruments
+                    else Instrument.PAD
+                )
+                logger.info("Generating %s track...", synth_instr.value)
+                synth_agent = SynthAgent(llm=self.llm, instrument=synth_instr)
+                synth_track = synth_agent.generate_part(context)
+                context.existing_tracks[synth_instr.value] = synth_track
+                session.tracks[synth_instr.value] = synth_track
+
+            if Instrument.PERCUSSION in enabled_instruments or Instrument.CONGA in enabled_instruments or Instrument.BONGO in enabled_instruments or Instrument.DJEMBE in enabled_instruments:
+                logger.info("Generating percussion track...")
+                perc_instr = next(
+                    (i for i in enabled_instruments if i in (Instrument.CONGA, Instrument.BONGO, Instrument.DJEMBE, Instrument.PERCUSSION)),
+                    Instrument.PERCUSSION,
+                )
+                perc_agent = PercussionAgent(llm=self.llm, instrument=perc_instr)
+                perc_track = perc_agent.generate_part(context)
+                perc_key = perc_track.instrument.value
+                context.existing_tracks[perc_key] = perc_track
+                session.tracks[perc_key] = perc_track
 
             # 3. Mixing phase
             session.status = SessionStatus.MIXING
@@ -203,6 +278,41 @@ class SessionOrchestrator:
             return {
                 "verse": ProgressionFactory.pop_I_V_vi_IV(key_root),
                 "chorus": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
+            }
+        elif genre in (Genre.JAZZ, Genre.SWING, Genre.BEBOP):
+            return {
+                "verse": ProgressionFactory.jazz_ii_V_I(key_root),
+                "chorus": ProgressionFactory.jazz_turnaround(key_root),
+            }
+        elif genre in (Genre.FUNK, Genre.RNB, Genre.SOUL):
+            return {
+                "verse": ProgressionFactory.funk_I7_IV7(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre in (Genre.LATIN, Genre.BOSSA_NOVA):
+            return {
+                "verse": ProgressionFactory.bossa_nova(key_root),
+                "chorus": ProgressionFactory.jazz_ii_V_I(key_root),
+            }
+        elif genre == Genre.METAL:
+            return {
+                "verse": ProgressionFactory.metal_power_I_VII_VI(key_root),
+                "chorus": ProgressionFactory.minor_i_VII_VI_VII(key_root),
+            }
+        elif genre in (Genre.HIP_HOP, Genre.ELECTRONIC, Genre.HOUSE, Genre.AMBIENT):
+            return {
+                "verse": ProgressionFactory.modal_dorian(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre == Genre.GOSPEL:
+            return {
+                "verse": ProgressionFactory.gospel_I_IV_I_V(key_root),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
+            }
+        elif genre == Genre.REGGAE:
+            return {
+                "verse": ProgressionFactory.classic_rock_I_IV_V(key_root, key_mode),
+                "chorus": ProgressionFactory.pop_I_V_vi_IV(key_root),
             }
         else:
             return {

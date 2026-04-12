@@ -16,6 +16,7 @@ The `audio_engineer.providers` package defines:
 | `TrackResult` | Pydantic model returned by every provider |
 | `ProviderRegistry` | Manages registered providers and routes requests |
 | `MidiProvider` | Built-in algorithmic MIDI backend (zero extra dependencies) |
+| `LLMMidiProvider` | LLM-driven MIDI backend; falls back to `MidiProvider` on parse failure |
 | `GeminiLyriaProvider` | Google Lyria 3 audio backend (requires `[gemini]` extra) |
 
 ---
@@ -44,7 +45,41 @@ The `audio_engineer.providers` package defines:
 - **Name:** `midi_engine`
 - **Capabilities:** `midi_generation`
 - **Availability:** always available
-- **What it does:** wraps the existing `SessionOrchestrator` to generate algorithmic MIDI using the full agent pipeline
+- **What it does:** wraps the existing `SessionOrchestrator` to generate algorithmic MIDI using the full agent pipeline (22 genres, 26 instruments)
+
+### `LLMMidiProvider`
+
+- **Name:** `llm_midi`
+- **Capabilities:** `midi_generation`
+- **Availability:** when an LLM callable is injected
+- **What it does:** constructs a structured prompt from the `TrackRequest` (genre, key, tempo, instrument, style hints) and asks the LLM to return a JSON array of `{pitch, velocity, start_beat, duration_beats}` objects. Falls back to `MidiProvider` if the response is unparseable.
+- **Priority:** registered at highest priority in `ProviderRegistry` when configured; use `preferred_provider="llm_midi"` to force it.
+
+```python
+from audio_engineer.providers.llm_midi_provider import LLMMidiProvider
+from audio_engineer.providers.base import TrackRequest
+
+provider = LLMMidiProvider(llm=lambda prompt: openai_client.complete(prompt))
+
+request = TrackRequest(
+    track_name="jazz_piano",
+    description="Comping jazz piano chords",
+    instrument="keys",
+    genre="jazz",
+    tempo=140,
+)
+result = provider.generate_track(request)
+# result.provider_used == "llm_midi"  or  "midi_engine_fallback" if LLM failed
+```
+
+`core/llm_prompts.py` provides the underlying helpers:
+
+| Helper | Description |
+| ------ | ----------- |
+| `build_midi_prompt(request)` | Builds the canonical MIDI generation prompt including JSON schema |
+| `parse_midi_json(text)` | Tolerant JSON parser — strips Markdown fences, returns `None` on failure |
+| `validate_midi_events(events)` | Guards against out-of-range pitches/velocities and beat positions |
+| `events_to_note_events(events, channel, ticks_per_beat, bar_offset_ticks)` | Converts validated dicts to `NoteEvent` objects |
 
 ### `GeminiLyriaProvider`
 

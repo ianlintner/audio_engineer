@@ -52,20 +52,43 @@ python scripts/generate_demo.py [OPTIONS]
 | `country` | Two-step, boom-chick feel | 100–140 BPM |
 | `punk` | Fast, simple, aggressive | 140–200 BPM |
 | `hard_rock` | Heavy, palm-muted riffs | 120–160 BPM |
+| `jazz` | Swing ride cymbal, comping snare | 120–240 BPM |
+| `funk` | 16th-note hi-hat, syncopated kick | 90–115 BPM |
+| `reggae` | One-drop (kick beat 3, snare 2+4) | 60–90 BPM |
+| `soul` | Gospel-influenced groove | 80–110 BPM |
+| `rnb` | Trap hi-hat / modern R&B | 70–100 BPM |
+| `metal` | Blast beats, double-kick, half-time | 160–250 BPM |
+| `hip_hop` | Boom-bap, trap, lo-fi | 70–100 BPM |
+| `latin` | Clave son/rumba, samba surdo | 90–130 BPM |
+| `bossa_nova` | Quiet syncopated hi-hat | 110–140 BPM |
+| `electronic` | 4-on-the-floor EDM / house | 120–140 BPM |
+| `house` | Open hi-hat on off-beats | 120–135 BPM |
+| `ambient` | Sparse, textural | 60–90 BPM |
+| `gospel` | Soulful backbeat | 70–110 BPM |
+| `swing` | Traditional jazz swing feel | 120–200 BPM |
+| `bebop` | Fast bebop ride pattern | 180–320 BPM |
 
 ---
 
 ## Available Modes
 
-| Mode | Interval Pattern | Characteristic Sound |
+| Mode | Semitone offsets | Characteristic Sound |
 | ---- | ---------------- | -------------------- |
-| `major` | W W H W W W H | Bright, happy |
-| `minor` | W H W W H W W | Dark, melancholic |
-| `dorian` | W H W W W H W | Minor with raised 6th — jazzy |
-| `mixolydian` | W W H W W H W | Major with flat 7th — bluesy |
-| `phrygian` | H W W W H W W | Spanish / flamenco feel |
-| `lydian` | W W W H W W H | Dreamy, floating |
-| `locrian` | H W W H W W W | Dissonant, rarely used |
+| `major` | 0 2 4 5 7 9 11 | Bright, happy |
+| `minor` | 0 2 3 5 7 8 10 | Dark, melancholic |
+| `dorian` | 0 2 3 5 7 9 10 | Minor with raised 6th — jazzy |
+| `mixolydian` | 0 2 4 5 7 9 10 | Major with flat 7th — bluesy |
+| `phrygian` | 0 1 3 5 7 8 10 | Spanish / flamenco feel |
+| `lydian` | 0 2 4 6 7 9 11 | Dreamy, floating |
+| `locrian` | 0 1 3 5 6 8 10 | Dissonant, unstable |
+| `harmonic_minor` | 0 2 3 5 7 8 11 | Classical minor with raised 7th |
+| `melodic_minor` | 0 2 3 5 7 9 11 | Jazz melodic minor |
+| `whole_tone` | 0 2 4 6 8 10 | Dreamlike, symmetric |
+| `diminished` | 0 2 3 5 6 8 9 11 | Tense, symmetric |
+| `bebop_dominant` | 0 2 4 5 7 9 10 11 | Bebop passing tone |
+| `bebop_major` | 0 2 4 5 7 8 9 11 | Bebop major with chromatic 6th |
+| `spanish_phrygian` | 0 1 4 5 7 8 10 | Flamenco / Phrygian dominant |
+| `hungarian_minor` | 0 2 3 6 7 8 11 | Eastern European, exotic |
 
 ---
 

@@ -18,8 +18,8 @@ from audio_engineer.agents.base import BaseMusician, SessionContext
 class KeyboardistAgent(BaseMusician):
     """Generates keyboard comping - pads for low intensity, rhythmic for high."""
 
-    def __init__(self, llm: Any = None):
-        super().__init__(instrument=Instrument.KEYS, channel=3, llm=llm)
+    def __init__(self, llm: Any = None, instrument: Instrument = Instrument.KEYS):
+        super().__init__(instrument=instrument, channel=3, llm=llm)
 
     def generate_part(self, context: SessionContext) -> MidiTrackData:
         genre = context.config.genre
@@ -57,9 +57,9 @@ class KeyboardistAgent(BaseMusician):
         program = self._select_program(genre)
 
         return MidiTrackData(
-            name="Keys",
-            instrument=Instrument.KEYS,
-            channel=3,
+            name=self.instrument.value.capitalize(),
+            instrument=self.instrument,
+            channel=self.channel,
             events=all_events,
             program=program,
         )
@@ -116,6 +116,12 @@ class KeyboardistAgent(BaseMusician):
         return events
 
     def _select_program(self, genre: Genre) -> int:
+        if self.instrument == Instrument.ORGAN:
+            return GM_PROGRAMS.get("drawbar_organ", GM_PROGRAMS["rock_organ"])
+        if self.instrument in (Instrument.VIBRAPHONE,):
+            return GM_PROGRAMS.get("vibraphone", GM_PROGRAMS["acoustic_grand_piano"])
+        if self.instrument in (Instrument.MARIMBA,):
+            return GM_PROGRAMS.get("marimba", GM_PROGRAMS["acoustic_grand_piano"])
         if genre in (Genre.CLASSIC_ROCK, Genre.HARD_ROCK, Genre.BLUES):
             return GM_PROGRAMS["rock_organ"]
         return GM_PROGRAMS["acoustic_grand_piano"]

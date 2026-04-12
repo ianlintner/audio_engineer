@@ -86,7 +86,7 @@ class TestScale:
 
     def test_invalid_mode(self):
         with pytest.raises(ValueError):
-            Scale("C", "lydian")
+            Scale("C", "not_a_real_mode")
 
     def test_invalid_root(self):
         with pytest.raises(ValueError):

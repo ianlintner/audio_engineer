@@ -135,6 +135,7 @@ class TestGenreAliases:
         ("ska punk", Genre.SKA),
         ("soca", Genre.CALYPSO),
         ("djent", Genre.PROGRESSIVE_METAL),
+        ("2-step", Genre.GARAGE_ELECTRONIC),
     ])
     def test_resolve_genre_from_alias(self, text: str, expected: Genre):
         assert resolve_genre(text) == expected
@@ -180,6 +181,18 @@ class TestGenreBlend:
         with pytest.raises(Exception):  # noqa: PT011 — Pydantic raises ValidationError
             GenreBlend(genres=[Genre.POP, Genre.JAZZ, Genre.FUNK, Genre.BLUES, Genre.REGGAE])
 
+    def test_weights_length_mismatch_rejected(self):
+        with pytest.raises(Exception):  # noqa: PT011
+            GenreBlend(genres=[Genre.JAZZ, Genre.FUNK], weights=[1.0])
+
+    def test_negative_weight_rejected(self):
+        with pytest.raises(Exception):  # noqa: PT011
+            GenreBlend(genres=[Genre.JAZZ], weights=[-0.5])
+
+    def test_zero_sum_weights_fall_back_to_equal(self):
+        blend = GenreBlend(genres=[Genre.JAZZ, Genre.FUNK], weights=[0.0, 0.0])
+        assert blend.normalised_weights == [0.5, 0.5]
+
 
 # ---------------------------------------------------------------------------
 # New ProgressionFactory methods
@@ -218,6 +231,30 @@ class TestExpandedProgressions:
     def test_progression_returns_nonempty(self, factory_fn):
         prog = factory_fn("C")
         assert len(prog) > 0
+
+    @pytest.mark.parametrize("factory_fn", [
+        ProgressionFactory.reggaeton_i_IV_V,
+        ProgressionFactory.afrobeat_vamp,
+        ProgressionFactory.flamenco_phrygian,
+    ])
+    def test_flat_key_progressions(self, factory_fn):
+        """Progressions that previously crashed on flat keys like Bb."""
+        prog = factory_fn("Bb")
+        assert len(prog) > 0
+
+
+# ---------------------------------------------------------------------------
+# Centralised genre→progression routing
+# ---------------------------------------------------------------------------
+
+class TestCentralisedRouting:
+    """Both orchestrator and midi_provider use get_genre_progressions."""
+
+    def test_get_genre_progressions_import(self):
+        from audio_engineer.core.music_theory import get_genre_progressions as fn
+        result = fn(Genre.JAZZ, "C", "major")
+        assert "verse" in result
+        assert "chorus" in result
 
 
 # ---------------------------------------------------------------------------

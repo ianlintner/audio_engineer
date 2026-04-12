@@ -1,7 +1,7 @@
 """Pydantic v2 data models for the AI Music Studio."""
 
 from enum import Enum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 
 
 class Genre(str, Enum):
@@ -358,6 +358,18 @@ class GenreBlend(BaseModel):
         description="Relative weights for each genre; normalised internally.",
     )
 
+    @model_validator(mode="after")
+    def _validate_weights(self) -> "GenreBlend":
+        if self.weights:
+            if len(self.weights) != len(self.genres):
+                raise ValueError(
+                    f"weights length ({len(self.weights)}) must match "
+                    f"genres length ({len(self.genres)})"
+                )
+            if any(w < 0 for w in self.weights):
+                raise ValueError("All weights must be non-negative")
+        return self
+
     @property
     def primary(self) -> Genre:
         """Return the genre with the highest weight."""
@@ -370,7 +382,10 @@ class GenreBlend(BaseModel):
         if not self.weights:
             n = len(self.genres)
             return [1.0 / n] * n
-        total = sum(self.weights) or 1.0
+        total = sum(self.weights)
+        if total == 0:
+            n = len(self.genres)
+            return [1.0 / n] * n
         return [w / total for w in self.weights]
 
 
@@ -528,7 +543,7 @@ GENRE_ALIASES: dict[str, Genre] = {
     "trip hop": Genre.DOWNTEMPO,
     "trip-hop": Genre.DOWNTEMPO,
     "uk garage": Genre.GARAGE_ELECTRONIC,
-    "2-step": Genre.GARAGE_ELECTRONIC,
+    "2 step": Genre.GARAGE_ELECTRONIC,
     "electro": Genre.ELECTRO,
     "vaporwave": Genre.VAPORWAVE,
     # Country / folk

@@ -134,6 +134,8 @@ class KeyboardistAgent(BaseMusician):
             return GM_PROGRAMS["kalimba"]
         if self.instrument == Instrument.ELECTRIC_PIANO:
             return GM_PROGRAMS["electric_piano_1"]
+        if self.instrument == Instrument.STEEL_DRUMS:
+            return GM_PROGRAMS["steel_drums"]
         if genre in (Genre.CLASSIC_ROCK, Genre.HARD_ROCK, Genre.BLUES,
                      Genre.CHICAGO_BLUES, Genre.SOUTHERN_ROCK):
             return GM_PROGRAMS["rock_organ"]

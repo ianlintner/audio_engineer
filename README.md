@@ -13,11 +13,17 @@
 
 ## ✨ Features
 
-- 🥁 **Drummer Agent** — genre-aware kick, snare, and hi-hat patterns
-- 🎸 **Bassist Agent** — root-note bass lines locked to drums and chord changes
+- 🥁 **Drummer Agent** — genre-aware patterns for 22 genres + all 40 PAS Standard Drum Rudiments
+- 🎸 **Bassist Agent** — root-note bass lines with 8 genre-specific bass patterns (walking, slap, tumbao, …)
 - 🎸 **Guitarist Agent** — rhythm/lead guitar parts and power chords
 - 🎹 **Keyboardist Agent** — chord voicings, pads, and arpeggios
+- 🎻 **Strings Agent** — legato lines, pizzicato, and tremolo for strings/violin
+- 🎺 **Brass Agent** — stabs, long tones, and fall-offs for brass/trumpet/saxophone
+- 🎛️ **Synth Agent** — sustained pads and arpeggio patterns for synthesizers
+- 🪘 **Percussion Agent** — Latin/Afro-Cuban hand drum patterns (conga, bongo, djembe)
+- 🎸 **Lead Guitar Agent** — pentatonic licks and scale fills
 - 🎚️ **Mixer & Mastering Agents** — per-track volume, pan, and loudness metadata
+- 🤖 **LLM MIDI generation** — `LLMMidiProvider` converts LLM JSON output to MIDI; falls back to algorithmic generation on parse failure
 - 🤖 **LLM-guided generation** — plug in OpenAI, Anthropic, or any LangChain provider
 - 🎛️ **DAW integration** — FluidSynth, TiMidity, GarageBand, Logic Pro, and raw MIDI/WAV export
 - 🌐 **REST API** — FastAPI server for programmatic session management
@@ -69,6 +75,15 @@ python scripts/generate_demo.py --genre pop --key C --mode major --with-keys
 # Blues in A minor rendered to WAV via FluidSynth
 python scripts/generate_demo.py --genre blues --key A --mode minor --render-audio --backend fluidsynth
 
+# Jazz in D dorian with full band (strings, brass, synth)
+python scripts/generate_demo.py --genre jazz --key D --mode dorian --with-keys -v
+
+# Funk groove in E minor at 105 BPM
+python scripts/generate_demo.py --genre funk --key E --mode minor --tempo 105 -v
+
+# Metal in E minor at 200 BPM
+python scripts/generate_demo.py --genre metal --key E --mode minor --tempo 200 -v
+
 # Thrash metal rhythm section at 200 BPM (stress-test script)
 python scripts/generate_thrash.py
 
@@ -86,14 +101,19 @@ Output files land in `./output/` by default, named `<session-id>_<instrument>.mi
 
 ## 🏗️ Architecture
 
-Tracks are generated **sequentially** — drums first, then bass, guitar, and keys — so each agent can react to what came before. The orchestrator manages chord progressions per section and coordinates file export.
+Tracks are generated **sequentially** — drums first, then bass, guitar, lead guitar, keys, strings, brass, synth, and percussion — so each agent can react to what came before. The orchestrator manages chord progressions per section and coordinates file export.
 
 ```
 SessionOrchestrator
-├── DrummerAgent      → drum pattern generation
+├── DrummerAgent      → drum pattern generation (22 genres, 40 rudiments)
 ├── BassistAgent      → bass line locked to drums + chords
 ├── GuitaristAgent    → rhythm/lead guitar parts
+├── LeadGuitarAgent   → pentatonic licks and scale fills
 ├── KeyboardistAgent  → chord voicings and pads
+├── StringsAgent      → legato strings / pizzicato / tremolo
+├── BrassAgent        → brass stabs, long tones, fall-offs
+├── SynthAgent        → sustained pads, arpeggio patterns
+├── PercussionAgent   → Latin/Afro-Cuban hand drum patterns
 ├── MixerAgent        → volume, pan, EQ per track
 └── MasteringAgent    → final loudness and metadata
 ```
@@ -104,14 +124,19 @@ See the **[full architecture docs](https://ianlintner.github.io/audio_engineer/a
 
 ## 🤖 Agents
 
-| Agent              | Role                                         | Output          |
-| ------------------ | -------------------------------------------- | --------------- |
-| `DrummerAgent`     | Kick, snare, hi-hat patterns per section     | `MidiTrackData` |
-| `BassistAgent`     | Root-note bass lines following chord changes | `MidiTrackData` |
-| `GuitaristAgent`   | Rhythm guitar / power chords                 | `MidiTrackData` |
-| `KeyboardistAgent` | Chord pads and voicings                      | `MidiTrackData` |
-| `MixerAgent`       | Per-track volume, pan, EQ                    | `MixConfig`     |
-| `MasteringAgent`   | Final processing metadata                    | `dict`          |
+| Agent              | Role                                                    | Output          |
+| ------------------ | ------------------------------------------------------- | --------------- |
+| `DrummerAgent`     | Kick, snare, hi-hat patterns (22 genres, 40 rudiments)  | `MidiTrackData` |
+| `BassistAgent`     | Root-note bass lines following chord changes            | `MidiTrackData` |
+| `GuitaristAgent`   | Rhythm guitar / power chords                            | `MidiTrackData` |
+| `LeadGuitarAgent`  | Pentatonic licks, scale runs, string bends              | `MidiTrackData` |
+| `KeyboardistAgent` | Chord pads and voicings                                 | `MidiTrackData` |
+| `StringsAgent`     | Legato strings, pizzicato, tremolo                      | `MidiTrackData` |
+| `BrassAgent`       | Stabs, long tones, fall-offs (trumpet/sax/brass)        | `MidiTrackData` |
+| `SynthAgent`       | Sustained pads and arpeggio patterns                    | `MidiTrackData` |
+| `PercussionAgent`  | Latin/Afro-Cuban hand drum patterns (conga/bongo/djembe)| `MidiTrackData` |
+| `MixerAgent`       | Per-track volume, pan, EQ                               | `MixConfig`     |
+| `MasteringAgent`   | Final processing metadata                               | `dict`          |
 
 All agents accept an optional `llm` parameter for LLM-guided generation.
 
@@ -123,9 +148,12 @@ All agents accept an optional `llm` parameter for LLM-guided generation.
 python scripts/generate_demo.py [OPTIONS]
 
 Options:
-  --genre         Genre preset (classic_rock, blues, pop, folk, country, punk, hard_rock)
+  --genre         Genre preset (classic_rock, blues, pop, folk, country, punk, hard_rock,
+                               jazz, funk, reggae, soul, rnb, metal, hip_hop, latin,
+                               bossa_nova, electronic, house, ambient, gospel, swing, bebop)
   --key           Root note (C, C#, D, D#, E, F, F#, G, G#, A, A#, B)
-  --mode          Scale mode (major, minor, dorian, mixolydian, phrygian, lydian, locrian)
+  --mode          Scale mode (major, minor, dorian, mixolydian, phrygian, lydian, locrian,
+                              harmonic_minor, melodic_minor, whole_tone, diminished, bebop_dominant)
   --tempo         BPM — 40 to 300 (default: 120)
   --output        Output directory (default: ./output)
   --sections      Number of song sections (default: 4)
@@ -170,8 +198,9 @@ See the **[MCP Server guide](https://ianlintner.github.io/audio_engineer/mcp-ser
 
 The `ProviderRegistry` routes generation requests to the best available backend:
 
-1. **`MidiProvider`** — algorithmic MIDI generation (always available, zero dependencies)
-2. **`GeminiLyriaProvider`** — full-length audio via Google Lyria 3 (requires `pip install -e ".[gemini]"` and `AUDIO_ENGINEER_GEMINI_API_KEY`)
+1. **`LLMMidiProvider`** — LLM-driven MIDI generation (highest priority when an LLM callable is configured; falls back to `MidiProvider` on parse failure)
+2. **`MidiProvider`** — algorithmic MIDI generation (always available, zero dependencies)
+3. **`GeminiLyriaProvider`** — full-length audio via Google Lyria 3 (requires `pip install -e ".[gemini]"` and `AUDIO_ENGINEER_GEMINI_API_KEY`)
 
 Custom providers can be registered at runtime:
 
@@ -180,6 +209,17 @@ from audio_engineer.providers import ProviderRegistry, AudioProvider, ProviderCa
 
 registry = ProviderRegistry()
 registry.register(my_custom_provider)
+```
+
+### LLM MIDI generation
+
+Pass any callable `(str) -> str` as the `llm` parameter of `LLMMidiProvider` or `SessionOrchestrator`:
+
+```python
+from audio_engineer.providers.llm_midi_provider import LLMMidiProvider
+
+provider = LLMMidiProvider(llm=lambda prompt: openai_client.complete(prompt))
+result = provider.generate_track(request)   # falls back to MidiProvider if JSON unparseable
 ```
 
 See the **[Providers guide](https://ianlintner.github.io/audio_engineer/providers/)** for details.
@@ -265,21 +305,24 @@ src/audio_engineer/
 ├── agents/
 │   ├── base.py              # BaseMusician, BaseEngineer, SessionContext
 │   ├── orchestrator.py      # SessionOrchestrator
-│   ├── musician/            # DrummerAgent, BassistAgent, GuitaristAgent, KeyboardistAgent
+│   ├── musician/            # DrummerAgent, BassistAgent, GuitaristAgent, KeyboardistAgent,
+│   │                        # StringsAgent, BrassAgent, SynthAgent, PercussionAgent, LeadGuitarAgent
 │   └── engineer/            # MixerAgent, MasteringAgent
 ├── core/
-│   ├── models.py            # Pydantic models (Session, MidiTrackData, etc.)
-│   ├── music_theory.py      # Scales, chords, progressions
+│   ├── models.py            # Pydantic models (Session, MidiTrackData, Genre, Instrument, Mode, …)
+│   ├── music_theory.py      # Scales, chords, progressions (ProgressionFactory with 15+ methods)
 │   ├── midi_engine.py       # MIDI file construction
-│   ├── patterns.py          # Genre-specific pattern library
+│   ├── patterns.py          # Pattern library (DrumRudiment, BassPattern, MelodicPattern, 40+ drum patterns)
 │   ├── rhythm.py            # Rhythmic utilities
 │   ├── audio_track.py       # AudioTrack model for provider results
 │   ├── track_composer.py    # Higher-level track composition helpers
-│   └── constants.py         # TICKS_PER_BEAT, MIDI note maps, etc.
+│   ├── llm_prompts.py       # LLM prompt builder, JSON parser, event validator
+│   └── constants.py         # TICKS_PER_BEAT, all 128 GM programs, all 47 GM drum sounds, scales, chords
 ├── providers/               # Multi-provider audio generation system
 │   ├── base.py              # AudioProvider ABC, TrackRequest/Result, ProviderCapability
 │   ├── registry.py          # ProviderRegistry with capability-based routing
 │   ├── midi_provider.py     # MidiProvider (algorithmic, zero-dependency)
+│   ├── llm_midi_provider.py # LLMMidiProvider (LLM-driven MIDI generation with fallback)
 │   └── gemini_provider.py   # GeminiLyriaProvider (Lyria 3 audio generation)
 ├── gemini/                  # Google Gemini AI integration
 │   ├── client.py            # GeminiClient singleton wrapper

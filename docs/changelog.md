@@ -23,10 +23,33 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and 
 - `scripts/generate_thrash.py` — thrash metal stress-test script (200 BPM, E minor)
 - `scripts/setup_soundfont.py` — automated SoundFont download and configuration helper
 - Game music mood presets for MCP: battle, exploration, mystery, town, boss, peaceful, victory, sad, dungeon, chase, stealth, menu
+- **Complete GM Program map** — all 128 GM instrument programs in `GM_PROGRAMS` (was ~40)
+- **Full GM Drum Map** — all 47 standard GM percussion sounds in `GM_DRUMS` (congas, bongos, timbales, cowbell, tambourine, triangles, cuica, guiro, maracas, etc.)
+- **Expanded scale library** — 13 new modes: harmonic minor, melodic minor, lydian, phrygian, locrian, whole-tone, diminished, augmented, chromatic, bebop dominant, bebop major, Spanish phrygian, Hungarian minor
+- **Expanded chord library** — 22 new chord types: 9th / maj9 / min9, dom11 / maj11 / min11, dom13 / maj13 / min13, sharp9, alt, half-dim (ø7), quartal, 6th, min6, 6/9
+- **15 new genres** — `Genre` enum extended to 22: Jazz, Funk, Reggae, Soul, R&B, Metal, Hip-Hop, Latin, Bossa Nova, Electronic, House, Ambient, Gospel, Swing, Bebop
+- **20 new instruments** — `Instrument` enum extended to 26: lead guitar, strings, brass, woodwinds, saxophone, trumpet, violin, synthesizer, pad, organ, vibraphone, marimba, percussion, conga, bongo, djembe, sitar, banjo, ukulele, mandolin
+- **11 new modes** — `Mode` enum extended with: `HARMONIC_MINOR`, `MELODIC_MINOR`, `LYDIAN`, `PHRYGIAN`, `LOCRIAN`, `WHOLE_TONE`, `DIMINISHED`, `BEBOP_DOMINANT`, `BEBOP_MAJOR`, `SPANISH_PHRYGIAN`, `HUNGARIAN_MINOR`
+- **40 PAS Standard Drum Rudiments** — `DrumRudiment` class encoding all 40 rudiments as `NoteEvent` sequences (rolls, diddles, flams, drags) in `core/patterns.py`
+- **40+ new drum patterns** — genre patterns for Jazz, Funk, Reggae, Soul/R&B, Metal, Hip-Hop, Latin, Electronic, Gospel, Ambient, Bebop, Swing (jazz ride, metal blast beat, reggae one-drop, trap hi-hat, samba surdo, clave son, 4-on-the-floor EDM, D'n'B amen break, etc.)
+- **`BassPattern` class** — 8 genre-specific bass patterns: jazz walking, funk slap, reggae skank, R&B two-feel, pop root-fifth, Latin tumbao, Motown, country boom-chick
+- **`MelodicPattern` class** — 10 patterns: jazz chord shells, guitar arpeggios, Travis picking, bossa nova comp, funk rhythm 16ths, stride keys, jazz two-handed keys, synth arp
+- **10 new `ProgressionFactory` methods** — `jazz_ii_V_I`, `jazz_turnaround`, `jazz_rhythm_changes`, `blues_jazz`, `modal_dorian`, `bossa_nova`, `minor_i_VII_VI_VII`, `gospel_I_IV_I_V`, `metal_power_I_VII_VI`, `funk_I7_IV7`
+- **`StringsAgent`** (`agents/musician/strings.py`) — legato lines, pizzicato (low intensity), tremolo (high intensity) for strings/violin
+- **`BrassAgent`** (`agents/musician/brass.py`) — stab chords, long tones, fall-offs for brass/trumpet/saxophone
+- **`SynthAgent`** (`agents/musician/synth.py`) — sustained pads and 16th-note arpeggio patterns for synthesizer/pad instruments
+- **`PercussionAgent`** (`agents/musician/percussion.py`) — Latin/Afro-Cuban hand drum patterns for conga, bongo, djembe on MIDI channel 9
+- **`LeadGuitarAgent`** (`agents/musician/lead_guitar.py`) — pentatonic licks, scale runs, and fills over chord changes
+- **`LLMMidiProvider`** (`providers/llm_midi_provider.py`) — LLM-driven MIDI generation; accepts any `Callable[[str], str]`; falls back to `MidiProvider` on JSON parse failure
+- **LLM prompt helpers** (`core/llm_prompts.py`) — `build_midi_prompt`, `parse_midi_json` (strips Markdown fences), `validate_midi_events`, `events_to_note_events`
+- `LLMMidiProvider` registered at highest priority in `ProviderRegistry` when an LLM callable is configured
+- Orchestration order extended to: drums → bass → guitar → lead guitar → keys → strings → brass → synth → percussion
 
 ### Changed
 - All configuration environment variables now require the `AUDIO_ENGINEER_` prefix (e.g. `AUDIO_ENGINEER_OUTPUT_DIR`, `AUDIO_ENGINEER_GEMINI_API_KEY`)
 - `SessionOrchestrator` exposes a `provider_registry` attribute for runtime provider management
+- `_INSTRUMENT_AGENTS` in `midi_provider.py` now maps all 26 `Instrument` values; unmapped instruments fall back to `KeyboardistAgent`
+- `MidiProvider._get_progressions` handles all 22 `Genre` values
 
 ---
 

@@ -58,19 +58,20 @@ jobs:
           cache: "pip"
 
       - name: Install caretaker
-        run: pip install caretaker
+        run: pip install "caretaker @ git+https://github.com/ianlintner/caretaker.git@main"
 
       - name: Run
         id: caretaker_run
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CARETAKER_EVENT_PAYLOAD: ${{ toJSON(github.event) }}
         run: |
           caretaker run \
             --config .github/maintainer/config.yml \
             --mode "${{ github.event.inputs.mode || (github.event_name == 'workflow_run' && 'event') || 'full' }}" \
             --event-type "${{ github.event_name }}" \
-            --event-payload '${{ toJSON(github.event) }}'
+            --event-payload "$CARETAKER_EVENT_PAYLOAD"
 
   self-heal-on-failure:
     runs-on: ubuntu-latest
@@ -87,7 +88,7 @@ jobs:
           cache: "pip"
 
       - name: Install caretaker
-        run: pip install caretaker
+        run: pip install "caretaker @ git+https://github.com/ianlintner/caretaker.git@main"
 
       - name: Self-heal — analyse own failure
         env:

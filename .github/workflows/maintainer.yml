@@ -16,8 +16,6 @@ on:
   workflow_run:
     workflows: ["CI"]
     types: [completed]
-  dependabot_alert:
-    types: [created]
   workflow_dispatch:
     inputs:
       mode:

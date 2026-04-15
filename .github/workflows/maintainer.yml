@@ -20,12 +20,13 @@ on:
         required: false
         default: "full"
         type: choice
-        options: [full, pr-only, issue-only, upgrade-only, dry-run]
+        options: [full, pr-only, issue-only, upgrade, dry-run]
 
 permissions:
   contents: write
   issues: write
   pull-requests: write
+  workflows: write
 
 jobs:
   maintain:
@@ -96,6 +97,6 @@ jobs:
         run: |
           caretaker run \
             --config .github/maintainer/config.yml \
-            --mode self-heal \
+            --mode event \
             --event-type workflow_run \
             --event-payload "$CARETAKER_EVENT_PAYLOAD"

@@ -99,6 +99,6 @@ jobs:
         run: |
           caretaker run \
             --config .github/maintainer/config.yml \
-            --mode event \
+            --mode self-heal \
             --event-type workflow_run \
             --event-payload "$CARETAKER_EVENT_PAYLOAD"

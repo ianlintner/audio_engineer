@@ -16,7 +16,7 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "Run mode"
+        description: "Run mode (use upgrade for upgrade-only runs)"
         required: false
         default: "full"
         type: choice

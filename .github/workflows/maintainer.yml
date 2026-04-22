@@ -134,7 +134,7 @@ jobs:
       # auditing or used to manually restore a known-good state.
       - name: Upload memory store snapshot
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: caretaker-memory-snapshot-${{ github.run_number }}
           path: .caretaker-memory-snapshot.json

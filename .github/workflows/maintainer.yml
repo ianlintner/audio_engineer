@@ -32,7 +32,6 @@ permissions:
   contents: write
   issues: write
   pull-requests: write
-  workflows: write
 
 jobs:
   # Short-circuit comment events that caretaker itself produced. Without this
@@ -179,6 +178,6 @@ jobs:
         run: |
           caretaker run \
             --config .github/maintainer/config.yml \
-            --mode self-heal \
+            --mode event \
             --event-type workflow_run \
             --event-payload "$CARETAKER_EVENT_PAYLOAD"

@@ -100,7 +100,7 @@ jobs:
           python-version: "3.12"
 
       - name: Restore memory store cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .caretaker-memory.db
           key: caretaker-memory-${{ github.repository }}

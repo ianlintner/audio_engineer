@@ -46,7 +46,7 @@ jobs:
       should_run: ${{ steps.guard.outputs.should_run }}
     steps:
       - id: guard
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const ev = context.eventName;

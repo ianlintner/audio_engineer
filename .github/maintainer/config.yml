@@ -145,3 +145,22 @@ llm:
 #     allowed_task_types: [LINT_FAILURE, REVIEW_COMMENT]
 #     route_same_repo_only: true
 #     request_timeout_seconds: 120.0
+
+# ── Fleet registry heartbeat ──────────────────────────────────────────────
+# Caretaker posts a run-summary heartbeat to the central dashboard after
+# each run. OAuth2 client_credentials (via OAUTH2_* repo secrets/vars)
+# attaches a bearer JWT; the module caches the token in-process for reuse
+# across runs.
+fleet_registry:
+  enabled: true
+  endpoint: https://caretaker.cat-herding.net/api/fleet/heartbeat
+  oauth2:
+    enabled: true
+
+# ── Triage ────────────────────────────────────────────────────────────────
+# Triage lands on by default from caretaker 0.11.0. Start in dry_run so the
+# first live runs emit the plan without mutating state; flip to false once
+# the plan looks right.
+triage:
+  enabled: true
+  dry_run: true

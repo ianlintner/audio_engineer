@@ -1,6 +1,5 @@
-## [2026-W17] — 2026-04-23
+## [2026-W17] — 2026-04-24
 
-- upgrade caretaker to v0.5.2 (#61)
 - upgrade caretaker to v0.10.0 (#62)
 - rename dispatch mode upgrade-only → upgrade (#63)
 - bump actions/cache from 4 to 5 (#68)

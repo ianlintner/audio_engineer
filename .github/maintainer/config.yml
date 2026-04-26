@@ -109,7 +109,11 @@ escalation:
   labels: ["maintainer:escalated"]
 
 llm:
-  claude_enabled: auto
+  # Use LiteLLM so caretaker routes through Azure AI (AZURE_AI_API_KEY /
+  # AZURE_AI_API_BASE) rather than the direct Anthropic SDK path, which
+  # would require an ANTHROPIC_API_KEY that is not provisioned here.
+  provider: litellm
+  default_model: azure_ai/gpt-4o
   claude_features:
     - ci_log_analysis
     - architectural_review
@@ -154,6 +158,9 @@ llm:
 fleet_registry:
   enabled: true
   endpoint: https://caretaker.cat-herding.net/api/fleet/heartbeat
+  # Empty string disables the HMAC shared-secret check; authentication
+  # is handled via OAuth2 client_credentials below.
+  secret_env: ""
   oauth2:
     enabled: true
 

@@ -65,7 +65,7 @@ jobs:
       CARETAKER_BACKEND_URL: ${{ vars.CARETAKER_BACKEND_URL }}
       CARETAKER_OIDC_AUDIENCE: ${{ vars.CARETAKER_OIDC_AUDIENCE }}
     steps:
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 

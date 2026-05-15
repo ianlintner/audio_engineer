@@ -1,3 +1,6 @@
+## [2026-W20] — 2026-05-15
+
+- reconcile CHANGELOG — 2026-W18 (#101)
 ## [2026-W18] — 2026-04-28
 
 - bump actions/cache from 4 to 5 (#68)
